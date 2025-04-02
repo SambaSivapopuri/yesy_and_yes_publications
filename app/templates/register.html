@@ -1,0 +1,51 @@
+{% extends "nav_bar.html" %}
+{% load static %}
+{% block content %}
+    <!--====== PAGE BANNER PART ENDS ======-->
+
+    <!--====== PROVACY PART START ======-->
+
+    <section class="signup pt-105 pb-120 gray-bg">
+        <div class="container">
+            <div class="col-md-8 offset-md-2">
+                <div class="signup-content">
+                    <form method="POST" id="signup-form" class="signup-form"> {% csrf_token %}
+                        <h2 class="form-title pb-20">Create account</h2>
+                        <div class="form-group">
+                            <input type="text" class="form-input" name="name" id="name" placeholder="Your Name" value="{% if user_details %}{{user_details.name}}{% endif %}"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" class="form-input" name="email" id="email" placeholder="Your Email" value="{% if user_details %}{{user_details.email}}{% endif %}"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-input" name="phone_no" id="phone_no" placeholder="Your Mobile Number" value="{% if user_details %}{{user_details.phone_no}}{% endif %}"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-input" name="password" id="password" placeholder="Password"/>
+                            <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-input" name="re_password" id="re_password" placeholder="Repeat your password"/>
+                        </div>
+                        {% if not user_details %}
+                        <div class="form-group">
+                            <input type="checkbox" name="agree_term" id="agree_term" class="agree-term" />
+                            <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="{% url 'terms_of_use'%}" class="term-service">Terms of service</a></label>
+                        </div>{% endif %}
+                        <div class="form-group">
+                            <input type="submit" name="submit" id="submit" class="main-btn register-submit" value="Sign up"/>
+                        </div>
+                    </form>
+                    {% if not user_details %}
+                    <p class="loginhere">
+                        Have already an account ? <a href="{% url 'login'%}" class="loginhere-link">Login here</a>
+                    </p>{% endif %}
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!--====== FAQ PART ENDS ======-->
+   
+{% endblock %}

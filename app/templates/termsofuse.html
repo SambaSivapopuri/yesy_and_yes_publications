@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {% load static %}
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>Yes & Yes Publications</title>
+
+  <!-- Favicon Icon -->
+  <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png">
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.nice-number.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/default.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+<style>
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	padding: 12px 16px;
+	z-index: 1;
+}
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+</style>
+<style>
+.float {
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:80px;
+	left:40px;
+	background-color:#25d366;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	font-size:30px;
+	box-shadow: 2px 2px 3px #999;
+	z-index:100;
+}
+.my-float {
+	margin-top:16px;
+}
+#callnowbutton {
+	display:none;
+}
+@media screen and (max-width:650px) {
+#callnowbutton {
+display:block;
+position:fixed;
+text-decoration:none;
+z-index:2147483647;
+width:100%;
+left:0;
+bottom:0;
+height:60px;
+border-top:1px solid #2dc62d;
+border-bottom:1px solid #006700;
+background:url(;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNjAgNjAiPjxwYXRoIGQ9Ik03LjEwNCAxNC4wMzJsMTUuNTg2IDEuOTg0YzAgMC0wLjAxOSAwLjUgMCAwLjk1M2MwLjAyOSAwLjc1Ni0wLjI2IDEuNTM0LTAuODA5IDIuMSBsLTQuNzQgNC43NDJjMi4zNjEgMy4zIDE2LjUgMTcuNCAxOS44IDE5LjhsMTYuODEzIDEuMTQxYzAgMCAwIDAuNCAwIDEuMSBjLTAuMDAyIDAuNDc5LTAuMTc2IDAuOTUzLTAuNTQ5IDEuMzI3bC02LjUwNCA2LjUwNWMwIDAtMTEuMjYxIDAuOTg4LTI1LjkyNS0xMy42NzRDNi4xMTcgMjUuMyA3LjEgMTQgNy4xIDE0IiBmaWxsPSIjMDA2NzAwIi8+PHBhdGggZD0iTTcuMTA0IDEzLjAzMmw2LjUwNC02LjUwNWMwLjg5Ni0wLjg5NSAyLjMzNC0wLjY3OCAzLjEgMC4zNWw1LjU2MyA3LjggYzAuNzM4IDEgMC41IDIuNTMxLTAuMzYgMy40MjZsLTQuNzQgNC43NDJjMi4zNjEgMy4zIDUuMyA2LjkgOS4xIDEwLjY5OWMzLjg0MiAzLjggNy40IDYuNyAxMC43IDkuMSBsNC43NC00Ljc0MmMwLjg5Ny0wLjg5NSAyLjQ3MS0xLjAyNiAzLjQ5OC0wLjI4OWw3LjY0NiA1LjQ1NWMxLjAyNSAwLjcgMS4zIDIuMiAwLjQgMy4xMDVsLTYuNTA0IDYuNSBjMCAwLTExLjI2MiAwLjk4OC0yNS45MjUtMTMuNjc0QzYuMTE3IDI0LjMgNy4xIDEzIDcuMSAxMyIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==) center/50px 50px no-repeat #009900;
+}
+body {
+padding-bottom:60px;
+}
+}
+</style>
+</head>
+<body>
+<!--====== PRELOADER PART START ======-->
+<!--====== PRELOADER PART START ======-->
+<!--====== HEADER PART START ======-->
+<header id="header-part" class="header-four">
+  <div class="header-top ">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="header-contact d-none d-lg-block">
+            <ul>
+              <li><i class="fa fa-envelope"></i><a href="#">yesbooksonlinesale@gmail.com</a></li>
+              <li><i class="fa fa-phone"></i><span>+91 9550484822</span></li>
+            </ul>
+          </div>
+          <!-- header contact -->
+        </div>
+        <div class="col-md-4">
+          <div class="header-right d-flex justify-content-end">
+            <div class="social d-flex"> <span class="follow-us">Follow Us :</span>
+              <ul>
+                <li><a href="#"><i class="fa fa-facebook-f"></i></a></li>
+                <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+              </ul>
+            </div>
+            <!-- social -->
+            <!--<div class="search-form d-none d-lg-block">
+              <form action="#">
+                <input id="filter" style="border:2px solid #07294d; border-radius: 50px; width:430px;" type="text" placeholder="Search by keyword" class="ui-autocomplete-input" autocomplete="off">
+                <input type="hidden" name="searchdata" id="searchdata">
+                <button style="border:#FFF"><i class="fa fa-search"></i></button>
+              </form>
+            </div>-->
+            <!--<div class="login-register">
+<div class="dropdown">
+<ul>
+                <li><a href="login.php">Login</a></li>
+                <li><a href="register.php">Register</a></li>
+              </ul>
+</div>
+</div>
+-->
+          </div>
+          <!-- header right -->
+        </div>
+        <!--<div class="col-md-2" style="color:#FFF;">
+          <p><a href="Track.php">Track your Order</a></p>
+        </div>-->
+      </div>
+      <!-- row -->
+    </div>
+    <!-- container -->
+  </div>
+  <!-- header top -->
+  <div class="navigation">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <nav class="navbar navbar-expand-lg"> <a class="navbar-brand" href="{% url 'index'%}">
+             <img src="{% static 'images/logo.png' %}" alt="Logo"> </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+            <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+              <ul class="navbar-nav ml-auto">
+                {% if category %}{% for i in category %}
+                <li class="nav-item"> <a href="{% url 'category_products' i.category.id %}">{{i.category.name}}</a> </li>
+                {% endfor %}{% endif %}
+                </li>
+              </ul>
+            </div>
+            <!--<div class="right-icon text-right">
+              <ul>
+                <li><a href="#"><i class="fa fa-shopping-bag"></i><span>0</span></a></li>
+              </ul>
+            </div>-->
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!--====== HEADER PART ENDS ======-->
+<!--====== SEARCH BOX PART START ======-->
+<div class="search-box">
+  <div class="search-form">
+    <div class="closebtn"> <span></span> <span></span> </div>
+    <form action="#">
+      <input type="text" placeholder="Search by keyword">
+      <button><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+  <!-- search form -->
+</div>
+<!--====== SEARCH BOX PART ENDS ======-->
+<!--====== PAGE BANNER PART START ======-->
+<!--====== PAGE BANNER PART ENDS ======-->
+<!--====== SHOP PART START ======-->
+<section  id="shop-single" class=" gray-bg">
+  <div class="section ">
+    <div class="container shop-details">
+      <div class="row">
+        <div class="container main">
+          <h1 style="text-align:center;">Terms of Use</h1>
+          <br/>
+          <br/>
+          <div style="text-align: justify;"> As the original purchaser of content sold on <b>Yes and Yes Publications</b>, you are entitled to access and use the content which is identified in the Books and which is on the Yes and Yes Publications website, at <b>www.onlineyespublications.com ("Website")</b>.  In order to access and use this content, you must register with Yes and Yes Publications and create a password to use in accessing the content on the Website. <br>
+            <br>
+            Your password is unique and exclusive to you, and you may not transfer your password to any other person or allow any other person to use your password to access or use content on the Website.  You agree to notify Yes and Yes Publications immediately if any other person makes unauthorized use of your password.  Yes and Yes Publications reserves the right to suspend or revoke your password in the event of any misuse of your password or any use of your password in violation of these Terms and Conditions.  In the event of any such suspension or revocation, you will not be entitled to any refund or payment. <br>
+            <br>
+            These Terms of Use govern your access to and use of the Website and the content on the Website.  By accessing and using the Website, you agree to these Terms of Use.  If you do not agree to any of these Terms of Use, you may not access or use the site.  Yes and Yes Publications reserves the right to modify these Terms of Use at any time and in its sole discretion.  Your use of the site following any modification will constitute your assent to and acceptance of the modifications. <br>
+            <br>
+            Upon registration, Yes and Yes Publications grants you a non-exclusive, non-transferable, non-assignable, personal license to access and use the Yes and Yes Publications content identified in the content you purchased via an online/offline reader. <br>
+            <br>
+            Yes and Yes Publications will not be liable for any delay or interruption in your access to the site or any content located on the site, or for any transmission errors, equipment or software incompatibilities, force majeure or other failure of performance.  Yes and Yes Publications will use reasonable efforts to correct any failure of performance, but Yes and Yes Publications will not be required to make any changes to any equipment or software used by Yes and Yes Publications or its contractors or agents to ensure compatibility with any equipment or software used by you.
+            You may not use the site or the content on the site for any commercial purpose, including but not limited to the use of any of the content to market or sell goods or services to any person.  You agree not to launch any automated system, including without limitation, "robots," "spiders," or "offline readers," to access the site. <br>
+            <br>
+            Yes and Yes Publications reserves the right to change, suspend access to, or remove any or all of the content on the Website at any time, for any reason, in its sole discretion.  Yes and Yes Publications also reserves the right to discontinue the Website at any time, either temporarily or permanently.  In the event of the removal of any content from the Website or the termination of the Website, you will not be entitled to any refund or payment. <br>
+            <br>
+            YOU AGREE THAT YOUR USE OF THE SITE SHALL BE AT YOUR SOLE RISK, AND Yes and Yes Publications WILL NOT BE HELD LIABLE IN ANY WAY FOR YOUR USE OF THE SITE OR FOR ANY INFORMATION CONTAINED ON THE SITE.  ALL CONTENT CONTAINED IN OR REFERRED TO ON THE SITE IS PROVIDED "AS IS," WITHOUT ANY REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED.  TO THE FULLEST EXTENT PERMITTED BY LAW, Yes and Yes Publications DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING, WITHOUT LIMITATION, ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  Yes and Yes Publications MAKES NO WARRANTIES THAT THE SITE WILL BE ERROR-FREE, OR THAT ANY ERRORS WILL BE CORRECTED, OR THAT THE SITE OR THE SERVER FROM WHICH THE SITE IS OPERATED WILL BE FREE OF VIRUSES OR OTHER POTENTIALLY HARMFUL CODES.  UNDER NO CIRCUMSTANCES, INCLUDING NEGLIGENCE, SHALL Yes and Yes Publications BE HELD LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL OR CONSEQUENTIAL DAMAGES AND EXPENSES OF ANY KIND (INCLUDING, WITHOUT LIMITATION, PERSONAL INJURY OR PROPERTY DAMAGE, LOST PROFITS, AND DAMAGES ARISING FROM COMPUTER VIRUSES, BUSINESS INTERRUPTION,  LOST DATA, UNAUTHORIZED ACCESS TO OR USE OF SITE SERVERS OR ANY PERSONAL INFORMATION STORED THEREIN, OR ANY INTERRUPTION OR CESSATION OF OPERATION OF THE SITE) ARISING OUT OF OR IN ANY WAY CONNECTED WITH THE USE OF THE SITE OR ANY INFORMATION CONTAINED ON THE SITE, WHETHER SUCH DAMAGES ARE BASED ON CONTRACT, TORT, STRICT LIABILITY OR OTHERWISE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. <br>
+            <br>
+            You agree to indemnify, hold harmless and defend Yes and Yes Publications from and against any and all claims, damages, losses, liabilities, judgments, awards, settlements, costs and expenses (including attorney's fees and court costs) arising out of or resulting from your use of this Website or the violation by you of any of these Terms of Use. <br>
+            <br>
+            YOU AGREE THAT ANY CAUSE OF ACTION ARISING OUT OF OR RELATED TO THIS SITE OR YOUR USE OF THIS SITE MUST COMMENCE WITHIN ONE (1) YEAR AFTER THE CAUSE OF ACTION ACCRUES, AND WILL THEREAFTER BE PERMANENTLY BARRED. <br>
+            <br>
+            These Terms of Use constitute the entire agreement between you and Yes and Yes Publications concerning your use of the Website and the contents of the Website. If any provision is deemed invalid by a court of competent jurisdiction, the remaining provisions shall remain in full force and effect. No waiver of any the Terms of Use shall be deemed a further or continuing waiver of such term or condition or any other term or condition, and any failure by Yes and Yes Publications to assert any right or provision under these Terms of Use shall not constitute a waiver of such right or provision. </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- container -->
+</section>
+<!--====== COURSES PART ENDS ======-->
+<!--====== FOOTER PART START ======-->
+<footer id="footer-part">
+  <!-- footer top -->
+  <div class="footer-copyright pt-10 pb-25">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="copyright text-md-left text-center pt-15">
+              <p>© Copyrights 2024 Yes Publications All rights reserved. </p>
+            </div>
+          </div>
+        </div>
+        <!--<div class="col-md-4">
+          <div class="copyright text-md-right text-center pt-15">
+            <p>Designed by <span>Futuristic</span> </p>
+          </div>
+        </div>-->
+        <a href="{% url 'faqs'%}" style="color:#ffc600;">FAQs</a> &nbsp; &nbsp; &nbsp; &nbsp; <a href="{% url 'aboutus'%}" style="color:#ffc600;">About Us</a> &nbsp; &nbsp; &nbsp; &nbsp; 
+        <a href="{% url 'contact'%}" style="color:#ffc600;">Contact Us</a> &nbsp; &nbsp; &nbsp; &nbsp; 
+        <a href="{% url 'terms_of_use'%}" style="color:#ffc600;">Terms of Use</a> &nbsp; &nbsp; &nbsp; &nbsp;
+         <a href="{% url 'privacy_policy'%}" style="color:#ffc600;">Privacy Policy</a> &nbsp; &nbsp; &nbsp; &nbsp; 
+         <a href="{% url 'refund_policy'%}" style="color:#ffc600;">Refund Policy</a> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+      <!-- row -->
+    </div>
+    <!-- container -->
+  </div>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <a href="https://api.whatsapp.com/send?phone=919550484822&amp;text=." class="float" target="_blank"> <i class="fa fa-whatsapp my-float"></i> </a>
+  <center>
+    <a href="tel:+91  9550484822" id="callnowbutton" style="font-size:25px; padding-top:15px; color:#FFF;"><i class="fa fa-phone"></i> 91 9550484822 </a>
+  </center>
+  <!-- footer copyright -->
+</footer>
+<!--====== FOOTER PART ENDS ======-->
+<!--====== BACK TO TP PART START ======-->
+<a href="#" class="back-to-top"><i class="fa fa-angle-up"></i></a>
+<!--====== BACK TO TP PART ENDS ======-->
+    
+<script src="{% static 'js/vendor/modernizr-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
+<!--====== Bootstrap js ======-->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!--====== Slick js ======-->
+<script src="{% static 'js/slick.min.js' %}"></script>
+<!--====== Magnific Popup js ======-->
+<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+<!--====== Counter Up js ======-->
+<script src="{% static 'js/waypoints.min.js' %}"></script>
+<script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+<!--====== Nice Select js ======-->
+<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+<!--====== Nice Number js ======-->
+<script src="{% static 'js/jquery.nice-number.min.js' %}"></script>
+<!--====== Count Down js ======-->
+<script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+<!--====== Validator js ======-->
+<script src="{% static 'js/validator.min.js' %}"></script>
+<!--====== Ajax Contact js ======-->
+<script src="{% static 'js/ajax-contact.js' %}"></script>
+<!--====== Main js ======-->
+<script src="{% static 'js/main.js' %}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDC3Ip9iVC0nIxC6V14CKLQ1HZNF_65qEQ"></script>
+<script src="{% static 'js/map-script.js' %}"></script>
+
+</body>
+</html>

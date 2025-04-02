@@ -1,0 +1,71 @@
+{% extends "nav_bar.html" %}
+{% load static %}
+{% block content %}
+<!--====== SEARCH BOX PART ENDS ======-->
+<!--====== PAGE BANNER PART START ======-->
+<!--====== PAGE BANNER PART ENDS ======-->
+<!--====== SHOP PART START ======-->
+<section  id="shop-single" class="pt-120 pb-120 gray-bg">
+  <div class="container">
+    <div class="shop-details">
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="shop-left pt-30">
+            <div class="tab-content" id="pills-tabContent">
+              <div class="tab-pane fade show active" id="pills-image-0" role="tabpanel" aria-labelledby="pills-image-1-tab">
+                <div class="shop-image"> 
+                  <a href="{% if product.image %}{{ product.image.url }}{% endif %}" class="shop-items ">
+                    <img src="{% if product.image %}{{ product.image.url }}{% endif %}" alt="Shop"></a>
+                   </div>
+              </div>
+              {% for img in images %}<div class="tab-pane fade" id="pills-image-{{img.id}}" role="tabpanel" aria-labelledby="pills-image-2-tab">
+                <div class="shop-image"> 
+                  <a href="{{img.image.url}}" class="shop-items"><img src="{{img.image.url}}" alt="Shop"></a> </div>
+              </div>{% endfor %}
+              
+              
+            </div>
+            <!--<ul class="nav nav-justified mt-30" id="pills-tab" role="tablist">
+              <li class="nav-item"> <a class="active" id="pills-image-1-tab" data-toggle="pill" href="#pills-image-1" role="tab" aria-controls="pills-image-1" aria-selected="true"> <span class="shop-thum"> <img src="images/book/23.jpg" alt="Thum"> </span> </a> </li>
+              <li class="nav-item"> <a id="pills-image-2-tab" data-toggle="pill" href="#pills-image-2" role="tab" aria-controls="pills-image-2" aria-selected="false"> <span class="shop-thum"> <img src="images/book/23.jpg" alt="Thum"> </span> </a> </li>
+              <li class="nav-item"> <a id="pills-image-3-tab" data-toggle="pill" href="#pills-image-3" role="tab" aria-controls="pills-image-1" aria-selected="false"> <span class="shop-thum"> <img src="images/book/23.jpg" alt="Thum"> </span> </a> </li>
+              <li class="nav-item"> <a id="pills-image-4-tab" data-toggle="pill" href="#pills-image-4" role="tab" aria-controls="pills-image-4" aria-selected="false"> <span class="shop-thum"> <img src="images/book/23.jpg" alt="Thum"> </span> </a> </li>
+            </ul>-->
+          </div>
+          <!-- shop left -->
+        </div>
+        <div class="col-md-7">
+          <div class="shop-right pt-30" style="MARGIN-LEFT: 73PX;"> <br>
+            <br>
+            <h6>{{product.name}}</h6>
+            <hr>
+            <span style="color: #292b2c;font-weight: 600; font-size:20px">Rs.{{product.get_final_price}}</span>
+            <p>{{product.description}}</p>
+            <input type="hidden" name="productID" id="productID" value="116">
+            <input type="hidden" name="pdiscount" id="pdiscount" value="30">
+            <!--<input type="hidden" name="loginid" id="loginid" value="">-->
+            <!-- <div class="nice-number pt-15">
+              <input type="text" value="1" name="number" id="number" readonly>
+            </div>-->
+            <!---->
+            <input type="hidden" name="shopid" value="116">
+            <div class="add-btn pt-15"> <a href="javascript:void(0);"> <a href="{% url 'checkout' %}">
+              <button type="submit" class="main-btn" name="submit">Buy Now</button>
+              </a> </a> </div>
+            <!---->
+          </div>
+        </div>
+      </div>
+      <!-- row -->
+      <!-- row -->
+    </div>
+    <!-- shop-details -->
+    <!-- related item -->
+  </div>
+  <!-- container -->
+</section>
+
+<!--====== COURSES PART ENDS ======-->
+<!--====== FOOTER PART START ======-->
+{% endblock %}
+

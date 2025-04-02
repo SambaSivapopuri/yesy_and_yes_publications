@@ -1,0 +1,145 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            {% if messages %}
+            {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+            <div class="d-flex justify-content-between">
+               
+                <h5 class="card-title">Sub-Category List</h5>
+                <div class="pagination-info">
+                    Showing {{ page_obj.start_index }} - {{ page_obj.end_index }} of {{ page_obj.paginator.count }} entries
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">S.No</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Image</th>
+                            <th scope="col">Category</th>
+                            <th scope="col">Category Image</th>
+                            <th scope="col">Status</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sub_category in page_obj %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
+                            <td>{{ sub_category.name }}</td>
+                            <td>
+                                {% if sub_category.image %}
+                                <img src="{{ sub_category.image.url }}" alt="{{ sub_category.name }}" width="50">
+                                {% endif %}
+                            </td>
+                            <td>{{ sub_category.category.name }}</td>
+                            <td>
+                                {% if sub_category.category.image %}
+                                <img src="{{ sub_category.category.image.url }}" alt="{{ sub_category.category.name }}" width="50">
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if sub_category.status %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href="{% url 'update_sub_category' sub_category.id %}">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-danger delete-btn" data-id="{{ sub_category.id }}">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="text-center">No Sub-Categories Found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-start">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.delete-btn', function() {
+        var categoryId = $(this).data('id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to recover this Sub-category! Related Products will also be removed.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `{% url 'remove_sub_category' 0 %}`.replace('0', categoryId),
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success').then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function(response) {
+                        Swal.fire('Error!', response.responseJSON?.error || 'Failed to delete category.', 'error');
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

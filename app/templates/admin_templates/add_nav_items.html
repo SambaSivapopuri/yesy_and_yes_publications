@@ -1,0 +1,80 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        {% if messages %}
+            {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <h5 class="card-title">Add Scrolling Items</h5>
+
+              <form class="row g-3" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> 
+                {% csrf_token %}
+                <div class="col-md-6">
+                    <label  for="product" class="form-label">Select product</label>
+                    <select name="product" id="product" class="form-control">
+                        <option value="">Select Product</option>
+                        {% for i in data %}
+                        <option value="{{product.id}}">{{i.name}}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                <div class="col-md-6">
+                  <label for="imageUpload" class="form-label">Category Image</label>
+                  <input type="file" class="form-control" id="imageUpload" name="img" accept=".jpg, .jpeg, .png" required>
+                  <div class="invalid-feedback">Please upload a valid image (JPG, JPEG, PNG).</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Dispaly</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="categoryAvailable" checked name="check">
+                    <label class="form-check-label" for="categoryAvailable">Available</label>
+                  </div>
+                </div>
+        
+                <div class="col-12">
+                  <img id="preview" src="#" alt="Image Preview" style="display: none; width: 100px; height: 100px;" class="mt-2">
+                </div>
+        
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                  <button type="reset" class="btn btn-secondary">Reset</button>
+                </div>
+              </form>
+    </div>
+</div>
+<script>
+    document.getElementById("imageUpload").addEventListener("change", function(event) {
+      let file = event.target.files[0];
+      if (file) {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+          let preview = document.getElementById("preview");
+          preview.src = e.target.result;
+          preview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  
+    function validateForm() {
+      const categoryName = document.getElementById("categoryName").value.trim();
+      const imageUpload = document.getElementById("imageUpload").files.length;
+  
+      if (!categoryName) {
+        alert("Please enter a category name.");
+        return false;
+      }
+      if (imageUpload === 0) {
+        alert("Please upload a category image.");
+        return false;
+      }
+      return true;
+    }
+  </script>
+{% endblock %}

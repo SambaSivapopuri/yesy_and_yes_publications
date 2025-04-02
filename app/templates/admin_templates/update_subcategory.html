@@ -1,0 +1,137 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            {% if messages %}
+            {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+            <h5 class="card-title">Update Subcategory</h5>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            
+                            <label class="form-label">Subcategory Name</label>
+                            <input type="text" name="name" class="form-control" value="{{ subcategory.name }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select name="category" class="form-control">
+                                {% for category in categories %}
+                                <option value="{{ category.id }}" {% if subcategory.category.id == category.id %}selected{% endif %}>
+                                    {{ category.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Image</label><br>
+                            {% if subcategory.image %}
+                                <img id="oldPreview" src="{{ subcategory.image.url }}" alt="Current Image" width="100"><br>
+                                <input type="checkbox" id="deleteImage" name="delete_image"> <span id="delete">Delete current image</span>
+                            {% else %}
+                                <p>No image available</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-6">
+                        <!-- Current Image Display -->
+                        <br>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" name="status" class="form-check-input" {% if subcategory.status %}checked{% endif %}>
+                            <label class="form-check-label">Active</label>
+                        </div>
+                        <br>
+
+                        <!-- New Image Upload -->
+                        <div class="mb-3">
+                            <label class="form-label">Upload New Image</label>
+                            <input type="file" name="new_image" class="form-control" id="imageUpload">
+                        </div>
+                        
+                        <!-- New Image Preview (Initially Hidden) -->
+                        <div class="mb-3" id="newImageContainer" style="display: none;">
+                            <label class="form-label">New Image Preview</label><br>
+                            <img id="newPreview" src="" alt="New Image Preview" width="100">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Checkbox -->
+                
+
+
+                <!-- Action Buttons -->
+                <div class="text-center">
+                <button type="submit" id="submit_update" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Image Preview -->
+<script>
+    // Declare the button globally
+    var button = document.getElementById('submit_update');
+
+    // Handling image upload and preview
+    document.getElementById("imageUpload").addEventListener("change", function(event) {
+        let file = event.target.files[0];
+        
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let oldPreview = document.getElementById("oldPreview");
+                let newPreview = document.getElementById("newPreview");
+                let newImageContainer = document.getElementById("newImageContainer");
+
+                // Hide the old image if a new image is selected
+                if (oldPreview) {
+                    oldPreview.style.display = "none";
+                    document.getElementById("delete").style.color = "red";
+                    button.disabled = true; // Disable the button when a new image is selected
+                }
+
+                // Show the new image preview
+                newPreview.src = e.target.result;
+                newImageContainer.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // If no file is selected, restore the old image
+            if (document.getElementById("oldPreview")) {
+                document.getElementById("oldPreview").style.display = "block";
+            }
+            document.getElementById("newImageContainer").style.display = "none";
+        }
+    });
+
+    // Remove image checkbox functionality
+    document.getElementById("deleteImage")?.addEventListener("change", function () {
+        let oldPreview = document.getElementById("oldPreview");
+        if (this.checked && oldPreview) {
+            oldPreview.style.display = "none";
+            button.disabled = false; // Enable the button when the image is deleted
+        } else if (oldPreview) {
+            oldPreview.style.display = "block";
+        }
+    });
+</script>
+
+{% endblock %}

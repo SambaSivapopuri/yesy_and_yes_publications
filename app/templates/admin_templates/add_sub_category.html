@@ -1,0 +1,90 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Add Sub-Category </h5>
+      {% if error %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{error}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endif %}
+      {% if message %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endif %}
+      <!-- No Labels Form -->
+      <form class="row g-3" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> {% csrf_token %}
+
+        <div class="col-md-6">
+          <label for="name" class="form-label">Sub-Category Name</label>
+          <input type="text" class="form-control" name="name" id="name">
+        </div>
+        <div class="col-md-6">
+          <label for="inputState" class="form-label">Category</label>
+            <select id="inputState" name='category' class="form-select">
+                <option value=""> Select Category</option>
+                {% for item in data %}<option value="{{item.id}}">{{item.name}}</option>{% endfor %}
+              </select>
+          </div>
+        <div class="col-md-6">
+          <label for="imageUpload" class="form-label">Upload Image</label>
+          <input type="file" class="form-control" id="imageUpload" name="img" accept=".jpg, .jpeg, .png" >
+        </div>
+        <div class="col-md-6">
+          <input type="checkbox" checked name="check"> Category Available
+        </div>
+        </div>
+        <img id="preview" src="#" alt="Image Preview" style="display: none; width: 100px; height: 100px;">
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="reset" class="btn btn-secondary">Reset</button><br>
+          <br>
+        </div>
+      </form>
+
+    </div>
+  </div>
+ 
+<script>
+  document.getElementById("imageUpload").addEventListener("change", function(event) {
+      let file = event.target.files[0];
+      if (file) {
+          let reader = new FileReader();
+          reader.onload = function(e) {
+              let preview = document.getElementById("preview");
+              preview.src = e.target.result;
+              preview.style.display = "block";
+          };
+          reader.readAsDataURL(file);
+      }
+  });
+
+  function validateForm() {
+    const name = document.getElementById('name').value.trim();
+    const category = document.getElementById('inputState').value;
+    const imageUpload = document.getElementById('imageUpload').files.length;
+
+    if (!name) {
+      alert('Please enter Sub-Category Name.');
+      return false;
+    }
+
+    if (!category) {
+      alert('Please select a Category.');
+      return false;
+    }
+
+    if (imageUpload === 0) {
+      alert('Please upload an image (jpg, jpeg, or png).');
+      return false;
+    }
+
+    return true;
+  }
+</script>
+
+{% endblock %}

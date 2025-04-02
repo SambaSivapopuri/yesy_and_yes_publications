@@ -1,0 +1,229 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+<style>
+  .preview-container img {
+    margin: 10px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    padding: 10px;
+  }
+</style>
+
+<div class="card">
+  <div class="card-body">
+    {% if messages %}
+            {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+    <h5 class="card-title">Update Product</h5>
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ error }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <form class="row g-3" method="post" enctype="multipart/form-data" id="product-form">
+      {% csrf_token %}
+
+      <div class="col-md-6">
+        <label for="name" class="form-label">Product Name</label>
+        <input type="text" id="name" class="form-control" name="name" value="{{ product.name }}">
+      </div>
+
+      <div class="col-md-6">
+        <label for="category" class="form-label">Category</label>
+        <select id="category" name="category" class="form-select">
+          <option value="">Select Category</option>
+          {% for category in categories %}
+          <option value="{{ category.id }}" {% if category.id == product.sub_category.category.id %}selected{% endif %}>{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="subcategory" class="form-label">Subcategory</label>
+        <select id="subcategory" name="subcategory" class="form-select">
+          <option value="">Select Subcategory</option>
+          {% for sub_category in sub_categories %}
+          <option value="{{ sub_category.id }}" {% if sub_category.id == product.sub_category.id %}selected{% endif %}>{{ sub_category.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="product_quntity" class="form-label">Quantity</label>
+        <input type="number" id="product_quntity" min="0" step="any" class="form-control" name="product_quntity" value="{{ product.product_quntity }}">
+      </div>
+
+      <div class="col-md-6">
+        <label for="product_rice" class="form-label">Price</label>
+        <input type="number" id="product_rice" min="0" step="any" class="form-control" name="price" value="{{ product.price }}">
+      </div>
+
+      <div class="col-md-6">
+        <label for="product_discount" class="form-label">Discount</label>
+        <input type="number" id="product_discount" min="0" step="any" class="form-control" name="discount" value="{{ product.discount }}">
+      </div>
+
+      <div class="col-md-6">
+        <label for="shipping_charge" class="form-label">Shipping Charge</label>
+        <input type="number" id="shipping_charge" min="0" step="any" class="form-control" name="shipping_charge" value="{{ product.shipping_charge }}">
+      </div>
+      <div class="col-md-6">
+        <label for="seller_name_or_shop_name" class="form-label">Seller Name / Shop Name</label>
+        <input type="text" id="seller_name_or_shop_name" class="form-control" name="seller_name_or_shop_name" value="{{ product.seller_name_or_shop_name }}">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Category Available</label>
+        <input type="checkbox" {% if product.status %}checked{% endif %} name="status" id="status">
+      </div>
+      <div class="col-md-6">
+        Out of Stock? <input type="checkbox" {% if product.out_of_stock %}checked{% endif %} name="stock">
+      </div>
+      <div class="col-md-6">
+        Send Notification? <input type="checkbox" {% if product.send_notification %}checked{% endif %} name="send_notification">
+      </div>
+      <div class="col-md-6">
+        Product Publish Or Unpublish? <input type="checkbox" {% if product.product_publish_or_unpublish %}checked{% endif %} name="publish">
+      </div>  
+      
+      
+      <div class="col-md-6">
+        <label class="form-label">Upload New Image</label>
+        <input type="file" name="new_image" class="form-control" id="imageUpload">
+    </div>
+      <div class="col-md-6">
+        <label class="form-label">Upload New Images</label>
+        <input type="file" name="new_images" multiple class="form-control" id="imageRelatedUpload">
+      </div>
+      <div class="col-md-6 preview-container" id="image_view">
+        <div><label class="form-label">Current Cover Image</label></div>
+        {% if product.image %}
+            <img id="oldPreview" src="{{ product.image.url }}" alt="Product Image" width="100">
+            <input type="checkbox" id="deleteImage" name="delete_image"> <span id="delete">Delete</span>
+        {% else %}
+            <p>No image available</p>
+        {% endif %}
+          
+      </div>
+      
+      <div class="col-md-6 preview-container">
+        <div>
+          <label class="form-label">Current Refrence Image's</label>
+        </div>
+        {% for image in product_images %}
+        
+          <img src="{{ image.image.url }}" alt="Product Image">
+          <input type="checkbox" name="delete_images" value="{{ image.id }}"> Delete
+    
+        {% endfor %}
+      </div>
+      <div class="col-mb-2" id="newImageContainer" style="display: none;">
+        <label class="form-label">New Image Preview</label><br>
+        <img id="newPreview" src="" alt="New Image Preview" width="100">
+    </div>
+    
+    <div class="col-md-8 preview-container" id="previewContainer"></div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary" id="submit_update">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+      $("#category").change(function () {
+        var categoryId = $(this).val();
+        $("#subcategory").empty().append('<option value="">Select Subcategory</option>'); 
+        if (categoryId) {
+          $.ajax({
+            url: "{% url 'get_subcategories' %}",
+            data: { 'category_id': categoryId },
+            success: function (data) {
+              $.each(data, function (index, subcategory) {
+                $("#subcategory").append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+              });
+            },
+            error: function () {
+              alert('Failed to fetch subcategories.');
+            }
+          });
+        }
+      });
+
+      
+    })
+
+    
+    $(document).ready(function(){
+      var button = document.getElementById('submit_update');
+      document.getElementById("imageUpload").addEventListener("change", function(event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let oldPreview = document.getElementById("oldPreview");
+                let newPreview = document.getElementById("newPreview");
+                let newImageContainer = document.getElementById("newImageContainer");
+
+                // Hide the old image if a new image is selected
+                if (oldPreview) {
+                    oldPreview.style.display = "none";
+                    document.getElementById("delete").style.color = "red";
+                    button.disabled = true; // Disable the button when a new image is selected
+                }
+
+                // Show the new image preview
+                newPreview.src = e.target.result;
+                newImageContainer.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // If no file is selected, restore the old image
+            if (document.getElementById("oldPreview")) {
+                document.getElementById("oldPreview").style.display = "block";
+            }
+            document.getElementById("newImageContainer").style.display = "none";
+        }
+    });
+
+    // Remove image checkbox functionality
+    document.getElementById("deleteImage")?.addEventListener("change", function () {
+        let oldPreview = document.getElementById("oldPreview");
+        if (this.checked && oldPreview) {
+            oldPreview.style.display = "none";
+            button.disabled = false; // Enable the button when the image is deleted
+        } else if (oldPreview) {
+            oldPreview.style.display = "block";
+        }
+    });
+    });
+    // Handling image upload and preview
+    document.getElementById("imageRelatedUpload").addEventListener("change", function (event) {
+      var previewContainer = document.getElementById("previewContainer");
+      previewContainer.innerHTML = '';
+      var files = event.target.files;
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var img = document.createElement("img");
+          img.src = e.target.result;
+          previewContainer.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+</script>
+
+
+{% endblock %}

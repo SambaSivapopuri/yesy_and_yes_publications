@@ -1,0 +1,125 @@
+{% extends "nav_bar.html" %}
+{% load static %}
+{% block content %}
+<section style="background:url(images/bg2.jpg)" id="shop-single" class=" gray-bg">
+  <div class="section">
+	<link rel="stylesheet" href="https://allyoucan.cloud/cdn/icofont/1.0.1/icofont.css" integrity="sha384-jbCTJB16Q17718YM9U22iJkhuGbS0Gd2LjaWb4YJEZToOPmnKDjySVa323U+W7Fv" crossorigin="anonymous">
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <form action=""  method="post" > {% csrf_token %}
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <input type="text" class="form-control" placeholder="Search Mobile Number" name="mobile">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="Submit" class="btn btn-primary" value="Search">
+                        </div>
+                    </div>
+            </form>
+        </div>
+    </div>
+
+
+ 
+    
+    <div class="row">
+        <div class="col-md-3">
+            <div class="osahan-account-page-left shadow-sm bg-white h-100">
+                <div class="border-bottom p-4">
+                    <div class="osahan-user text-center">
+                        <div class="osahan-user-media">
+                            <img class="mb-3 rounded-pill shadow-sm mt-1" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="gurdeep singh osahan">
+                            <div class="osahan-user-media-body">
+                                <h6 class="mb-2">{{user_details.name}}</h6>
+                                <p class="mb-1">+91 {% if mobile %}{{mobile}}{% endif %}</p>
+                                <p>{{user_details.email}}</p>
+                                {% comment %} <p class="mb-0 text-black font-weight-bold"><a class="text-primary mr-3"  href="{% url 'update_user'%}"><i class="icofont-ui-edit"></i> EDIT</a></p> {% endcomment %}
+                                
+                              </div>
+                        </div>
+                    </div>
+                </div>
+                <ul class="nav nav-tabs flex-column border-0 pt-4 pl-4 pb-4" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" id="orders-tab" data-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="icofont-food-cart"></i> Orders</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="osahan-account-page-right shadow-sm bg-white p-4 h-100">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane  fade  active show" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                        {% if success %}<p style="color:green">{{success}}</p>{% endif %}
+                        <h4 class="font-weight-bold mt-0 mb-4"> Orders</h4>
+                        {% for order in orders %}
+                         
+                        <div class="bg-white card mb-4 order-list shadow-sm">
+                            <div class="gold-members p-4">
+                                <a href="#">
+                                </a>
+                                <div class="media">
+                                    <a href="#">
+                                        <img class="mr-4" src="{{order.customer.order.product.image.url}}" alt="Generic placeholder image" width="100">
+                                    </a>
+                                    <div class="media-body">
+                                        <a href="#">
+                                            <span class="float-right text-info">Delivered on Mon, Nov 12, 7:18 PM <i class="icofont-check-circled text-success"></i></span>
+                                        </a>
+                                        <h6 class="mb-2">
+                                            <a href="#"></a>
+                                            <a href="#" class="text-black">{{order.customer.order.product.name}}</a>
+                                        </h6>
+                                        <p class="text-gray mb-1"><i class="icofont-location-arrow"></i>{% if order.customer.address_line1 %} {{order.customer.address_line1}} -- {% endif %}{% if order.customer.address_line2 %}{{order.customer.address_line2}}  -- {% endif %} {% if order.customer.village %}{{order.customer.village}} -- {% endif %}{% if order.city %}{{order.customer.city}} -- {% endif %} {% if order.customer.state %}{{order.state}} -- {% endif %} {% if order.zipcode %}{{order.customer.zipcode}}{% endif %}
+                                        </p>
+                                        <i class="icofont-list"></i> ORDER #{{order.order.product.name}}{{order.id}} <i class="icofont-clock-time ml-2"></i><p class="text-gray mb-3 " data-timestamp="{{order.created_at}}">{{order.created_at|date:"d-m-Y"}} </p>
+                                        <p class="text-dark">{{order.customer.address_line1}}
+                                        </p>
+                                        <hr>
+                                        <div class="float-right">
+                                            
+                                            <a class="btn btn-sm btn-primary" href="#"><i class="icofont-refresh"></i> RE ORDER</a>
+                                        </div>
+                                        <p class="mb-0 text-black text-primary pt-2"><span class="text-black font-weight-bold"> Total Paid:</span> {{order.total_price}}
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+  <!-- container -->
+</section>
+<script>
+  function formatTimestamp(timestamp) {
+      let date = new Date(parseInt(timestamp));
+
+      let options = { 
+          weekday: 'short',  // Mon
+          month: 'short',    // Nov
+          day: '2-digit',    // 12
+          hour: '2-digit',   // 6
+          minute: '2-digit', // 26
+          hour12: true       // PM format
+      };
+
+      return date.toLocaleString('en-US', options).replace(',', '');
+  }
+
+  // Select all elements with class 'timestamp'
+  document.querySelectorAll('.timestamp').forEach(element => {
+      let timestamp = element.getAttribute('data-timestamp');
+      element.innerText = formatTimestamp(timestamp);
+  });
+</script>
+{% endblock %}

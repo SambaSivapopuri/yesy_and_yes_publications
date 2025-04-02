@@ -1,0 +1,144 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+<section class="section">
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    {% if messages %}
+            {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+                    <h1 class="card-title">Upload CSV or Excel File</h1>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="file" id="fileInput" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <button onclick="uploadFile()" class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+            <p id="message"></p>
+                </div>
+            </div>
+            
+        </div>
+        <div class="row">
+            <section class="col-lg-12">
+                <div class="card">
+
+                    <div class="card-body">
+                        <h5 class="card-title">Order List</h5>
+
+                        <!-- Table Container (Fixed Header & Scrollable Body) -->
+                        <div style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd;">
+                            <table class="table datatable" style="width: 100%; border-collapse: collapse;">
+                                <thead style="position: sticky; top: 0; background: white; z-index: 2;">
+                                    <tr>
+                                        <th style="min-width: 50px;">S.No</th>
+                                        <th style="min-width: 100px;">Number</th>
+                                        <th style="min-width: 120px;">Date</th>
+                                        <th style="min-width: 120px;">Product Name</th>
+                                        <th style="min-width: 120px;">Quantity</th>
+                                        <th style="min-width: 120px;">Order No</th>
+                                        <th style="min-width: 120px;">Payent Status</th>
+                                        <th style="min-width: 120px;">Pay Amount</th>
+                                        <th style="min-width: 120px;">Name</th>
+                                        <th style="min-width: 120px;">Phone No</th>
+                                        <th style="min-width: 120px;">Preview</th>
+                                        <th style="min-width: 120px;">Track Post</th>
+                                        <th style="min-width: 120px;">Address</th>
+                                        <th style="min-width: 120px;">Zipcode</th>
+                                        <th style="min-width: 100px;">Transaction Id</th>
+                                        <th style="min-width: 100px;">Seller Name</th>
+                                        <th style="min-width: 140px;">Action</th>
+                                        <th style="min-width: 180px;">Barcode</th>
+                                        <th style="min-width: 150px;">City</th>
+                                        <th style="min-width: 100px;">Address</th>
+                                        <th style="min-width: 100px;">Weight</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in page_obj %}
+                                    <tr>
+                                        <td><input type="checkbox" id="select_all" onclick="toggleAll(this)">{{
+                                            forloop.counter }}</td>
+                                        <td>{{ order.customer.order.id}}</td>
+                                        {% comment %} <td><img
+                                                src="{% if product.image %}{{ product.image.url }} {% endif %}"
+                                                width="50"></td> {% endcomment %}
+                                        <td>{{ order.customer.order.created_at|date:"d-m-Y" }}</td>
+                                        <td>{{ order.customer.order.product.name }}</td>
+                                        <td>1</td>
+                                        <td>{{ order.customer.order.order_number }}</td>
+                                        <td>
+                                            {% if not order.status %}
+                                            <span class="badge bg-danger">Not Available</span>
+                                            {% else %}
+                                            <span class="badge bg-success">success</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ order.total_price}}</td>
+                                        <td>{{ order.customer.customer_name }}</td>
+                                        <td>{{ order.customer.customer_phone }}</td>
+                                        <td>Preview..</td>
+                                        <td><a href="{% url 'track_order' order.id%}"><button
+                                                    class="btn btn-primary">Track</button></a></td>
+                                        <td>{{ order.customer.address_line1 }}</td>
+                                        <td>{{ order.customer.zipcode }}</td>
+                                        <td>{{ order.transaction_id}}</td>
+
+                                        <td>
+                                            {{ order.customer.order.product.seller_name_or_shop_name}}
+                                        </td>
+                                        <td>Action</td>
+                                        <td>Barcode</td>
+                                        <td>order.customer.city</td>
+                                        <td>order.customer.address_line1</td>
+                                        <td>Action</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <!-- End Table Container -->
+
+                    </div>
+                </div>
+            </div>
+        </div>
+</section>
+<script>
+    function uploadFile() {
+        const file = $('#fileInput')[0].files[0];
+        if (!file) {
+            $('#message').text('Please select a file.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        $.ajax({
+            url: 'http://127.0.0.1:8000/upload/',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $('#message').text(response.message);
+            },
+            error: function (xhr) {
+                const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred';
+                $('#message').text(errorMessage);
+            }
+        });
+    }
+</script>
+{% endblock %}

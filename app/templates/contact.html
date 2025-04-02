@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<section style="{%static 'background:url(images/bg2.jpg)' %}" id="shop-single" class=" gray-bg">
+  <div class="section">
+	<div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="contact-from">
+                        <div class="section-title">
+                            <h5>Contact Us</h5>
+                            <h2>Keep in touch</h2>
+                        </div> <!-- section title -->
+                        <div class="main-form pt-45">
+                            <form id="contact-form" action="" method="post" data-toggle="validator" novalidate="true">{% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="single-form form-group">
+                                            <input name="name" type="text" placeholder="Your name" data-error="Name is required." required="required">
+                                            <div class="help-block with-errors"></div>
+                                        </div> <!-- single form -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="single-form form-group">
+                                            <input name="email" type="email" placeholder="Email" data-error="Valid email is required." required="required">
+                                            <div class="help-block with-errors"></div>
+                                        </div> <!-- single form -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="single-form form-group">
+                                            <input name="subject" type="text" placeholder="Subject" data-error="Subject is required." required="required">
+                                            <div class="help-block with-errors"></div>
+                                        </div> <!-- single form --> 
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="single-form form-group">
+                                            <input name="phone" type="text" placeholder="Phone" data-error="Phone is required." required="required">
+                                            <div class="help-block with-errors"></div>
+                                        </div> <!-- single form -->
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="single-form form-group">
+                                            <textarea name="message" placeholder="Message" data-error="Please,leave us a message." required="required"></textarea>
+                                            <div class="help-block with-errors"></div>
+                                        </div> <!-- single form -->
+                                    </div>
+                                    <p class="form-message"></p>
+                                    <div class="col-md-12">
+                                        <div class="single-form">
+                                            <button type="submit" class="main-btn disabled">Send</button>
+                                        </div> <!-- single form -->
+                                    </div> 
+                                </div> <!-- row -->
+                            </form>
+                        </div> <!-- main form -->
+                    </div> <!--  contact from -->
+                </div>
+                <div class="col-lg-4">
+                    <div class="contact-address">
+                        <div class="contact-heading">
+                            <h5>Address</h5>
+                            <p>If you have any further questions, please don’t hesitate to contact me.</p>
+                        </div>
+                        <ul>
+
+                            <li>
+                                <div class="single-address">
+                                    <div class="icon">
+                                        <i class="fa fa-home"></i>
+                                    </div>
+                                    <div class="cont">
+                                        <p>Vijayawada</p>
+                                    </div>
+                                </div> <!-- single address -->
+                            </li>
+                            <li>
+                                <div class="single-address">
+                                    <div class="icon">
+                                        <i class="fa fa-phone"></i>
+                                    </div>
+                                    <div class="cont">
+                                        <p>9985089822</p>
+                                 
+                                    </div>
+                                </div> <!-- single address -->
+                            </li>
+                            <li>
+                                <div class="single-address">
+                                    <div class="icon">
+                                        <i class="fa fa-envelope-o"></i>
+                                    </div>
+                                    <div class="cont">
+                                       
+                                        <p>onlineyespublications@gmail.com</p>
+                                    </div>
+                                </div> <!-- single address -->
+                            </li>
+                            <li>
+                                <div class="single-address">
+                                    <div class="icon">
+                                        <i class="fa fa-globe"></i>
+                                    </div>
+                                    <div class="cont">
+                                        <p>www.yoursite.com</p>
+                                        <p>www.example.com</p>
+                                    </div>
+                                </div> <!-- single address -->
+                            </li>
+                        </ul>
+                    </div> <!-- contact address -->
+                
+                </div>
+            </div> <!-- row -->
+        </div>
+</div>
+  <!-- container -->
+</section>
+<!--====== COURSES PART ENDS ======-->
+<!--====== FOOTER PART ENDS ======-->
+<!--====== BACK TO TP PART START ======-->
+<a href="#" class="back-to-top"><i class="fa fa-angle-up"></i></a>
+<!--====== BACK TO TP PART ENDS ======-->
+
+{% endblock %}

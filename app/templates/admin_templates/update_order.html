@@ -1,0 +1,81 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        {% if messages %}
+            {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <h5 class="card-title">Update Order Details</h5>
+
+        <!-- Update Category Form -->
+        <form class="row g-3" method="post" >
+            {% csrf_token %}
+            <!-- Category Name -->
+            <div class="col-md-6">
+                <label><b>Name: {{ customer.customer_name }}</b></label>
+                
+            </div>
+            <div class="col-md-6">
+                <label><b>{{ customer.relation }}:-{{customer.relation_name}}</b></label>
+            </div>
+            <div class="col-md-6">
+                <label><b>Mobile No: {{ customer.customer_phone }}</b></label>
+                
+            </div>
+            <div class="col-md-6">
+                <label><b>Email: {{ customer.customer_email }}</b></label>
+                
+            </div>
+            
+            <div class="col-md-6">
+                <label>Village</label>
+                <input type="text" class="form-control" name="village" value={{customer.village}}>
+            </div>
+            <div class="col-md-6">
+                <label>City</label>
+                <input type="text" class="form-control" name="city" value={{customer.city}}>
+            </div>
+            <div class="col-md-6">
+                <label>State</label>
+                <input type="text" class="form-control" name="state" value={{customer.state}}>
+            </div>
+            <div class="col-md-6">
+                <label>Zipcode</label>
+                <input type="text" class="form-control" name="zipcode" value={{customer.zipcode}}>
+            </div>
+            <!-- Upload New Image -->
+            <div class="col-md-6">
+                <label>doorno</label>
+                <input type="text" class="form-control" name="doorno" value={{customer.doorno}}>
+            </div>
+            <div class="col-md-6">
+                <label>Address Line-1</label>
+                    <textarea class="form-control" name="address_line1">{{customer.address_line1}}</textarea>
+            </div>
+            <div class="col-md-6">
+                <label>Address Line-2</label>
+                    <textarea class="form-control" name="address_line2">{{customer.address_line2}}</textarea>
+            </div>
+            <!-- Category Available Checkbox -->
+           
+
+            <!-- Current Image Display -->
+       
+
+        
+            <!-- Form Actions -->
+            <div class="text-center">
+                <button type="submit" id="submit_update" class="btn btn-primary">Update</button>
+                <a href="{% url 'order_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

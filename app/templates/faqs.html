@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {% load static %}
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Title -->
+  <title>Yes & Yes Publications</title>
+
+  <!-- Favicon Icon -->
+  <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png">
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <link rel="stylesheet" href="{% static 'css/nice-select.css' %}">
+  <link rel="stylesheet" href="{% static 'css/jquery.nice-number.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/default.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+<style>
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	padding: 12px 16px;
+	z-index: 1;
+}
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+</style>
+<style>
+.float {
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:80px;
+	left:40px;
+	background-color:#25d366;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	font-size:30px;
+	box-shadow: 2px 2px 3px #999;
+	z-index:100;
+}
+.my-float {
+	margin-top:16px;
+}
+#callnowbutton {
+	display:none;
+}
+@media screen and (max-width:650px) {
+#callnowbutton {
+display:block;
+position:fixed;
+text-decoration:none;
+z-index:2147483647;
+width:100%;
+left:0;
+bottom:0;
+height:60px;
+border-top:1px solid #2dc62d;
+border-bottom:1px solid #006700;
+background:url(;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNjAgNjAiPjxwYXRoIGQ9Ik03LjEwNCAxNC4wMzJsMTUuNTg2IDEuOTg0YzAgMC0wLjAxOSAwLjUgMCAwLjk1M2MwLjAyOSAwLjc1Ni0wLjI2IDEuNTM0LTAuODA5IDIuMSBsLTQuNzQgNC43NDJjMi4zNjEgMy4zIDE2LjUgMTcuNCAxOS44IDE5LjhsMTYuODEzIDEuMTQxYzAgMCAwIDAuNCAwIDEuMSBjLTAuMDAyIDAuNDc5LTAuMTc2IDAuOTUzLTAuNTQ5IDEuMzI3bC02LjUwNCA2LjUwNWMwIDAtMTEuMjYxIDAuOTg4LTI1LjkyNS0xMy42NzRDNi4xMTcgMjUuMyA3LjEgMTQgNy4xIDE0IiBmaWxsPSIjMDA2NzAwIi8+PHBhdGggZD0iTTcuMTA0IDEzLjAzMmw2LjUwNC02LjUwNWMwLjg5Ni0wLjg5NSAyLjMzNC0wLjY3OCAzLjEgMC4zNWw1LjU2MyA3LjggYzAuNzM4IDEgMC41IDIuNTMxLTAuMzYgMy40MjZsLTQuNzQgNC43NDJjMi4zNjEgMy4zIDUuMyA2LjkgOS4xIDEwLjY5OWMzLjg0MiAzLjggNy40IDYuNyAxMC43IDkuMSBsNC43NC00Ljc0MmMwLjg5Ny0wLjg5NSAyLjQ3MS0xLjAyNiAzLjQ5OC0wLjI4OWw3LjY0NiA1LjQ1NWMxLjAyNSAwLjcgMS4zIDIuMiAwLjQgMy4xMDVsLTYuNTA0IDYuNSBjMCAwLTExLjI2MiAwLjk4OC0yNS45MjUtMTMuNjc0QzYuMTE3IDI0LjMgNy4xIDEzIDcuMSAxMyIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==) center/50px 50px no-repeat #009900;
+}
+body {
+padding-bottom:60px;
+}
+}
+</style>
+</head>
+<body>
+<!--====== PRELOADER PART START ======-->
+<!--====== PRELOADER PART START ======-->
+<!--====== HEADER PART START ======-->
+<header id="header-part" class="header-four">
+  <div class="header-top ">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <div class="header-contact d-none d-lg-block">
+            <ul>
+              <li><i class="fa fa-envelope"></i> <a href="mailto:yesbooksonlinesale@gmail.com">yesbooksonlinesale@gmail.com</a></li>
+              <li><i class="fa fa-phone"></i><span>+91 9550484822</span></li>
+            </ul>
+          </div>
+          <!-- header contact -->
+        </div>
+        <div class="col-md-4">
+          <div class="header-right d-flex justify-content-end">
+            <div class="social d-flex"> <span class="follow-us">Follow Us :</span>
+              <ul>
+                <li><a href="#"><i class="fa fa-facebook-f"></i></a></li>
+                <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+              </ul>
+            </div>
+            <!-- social -->
+            <!--<div class="search-form d-none d-lg-block">
+              <form action="#">
+                <input id="filter" style="border:2px solid #07294d; border-radius: 50px; width:430px;" type="text" placeholder="Search by keyword" class="ui-autocomplete-input" autocomplete="off">
+                <input type="hidden" name="searchdata" id="searchdata">
+                <button style="border:#FFF"><i class="fa fa-search"></i></button>
+              </form>
+            </div>-->
+            <!--<div class="login-register">
+<div class="dropdown">
+<ul>
+                <li><a href="login.php">Login</a></li>
+                <li><a href="register.php">Register</a></li>
+              </ul>
+</div>
+</div>
+-->
+          </div>
+          <!-- header right -->
+        </div>
+        <!--<div class="col-md-2" style="color:#FFF;">
+          <p><a href="Track.php">Track your Order</a></p>
+        </div>-->
+      </div>
+      <!-- row -->
+    </div>
+    <!-- container -->
+  </div>
+  <!-- header top -->
+  <div class="navigation">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <nav class="navbar navbar-expand-lg"> <a class="navbar-brand" href="{% url 'index'%}"> 
+            <img src="{% static 'images/logo.png' %}" alt="Logo"> </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+            <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+              <ul class="navbar-nav ml-auto">
+                {% if category %}{% for i in category %}
+                <li class="nav-item"> <a href="{% url 'category_products' i.category.id %}">{{i.category.name}}</a> </li>
+                {% endfor %}{% endif %}
+                </li>
+              </ul>
+            </div>
+            <!--<div class="right-icon text-right">
+              <ul>
+                <li><a href="#"><i class="fa fa-shopping-bag"></i><span>0</span></a></li>
+              </ul>
+            </div>-->
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!--====== HEADER PART ENDS ======-->
+<!--====== SEARCH BOX PART START ======-->
+<div class="search-box">
+  <div class="search-form">
+    <div class="closebtn"> <span></span> <span></span> </div>
+    <form action="#">
+      <input type="text" placeholder="Search by keyword">
+      <button><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+  <!-- search form -->
+</div>
+<!--====== SEARCH BOX PART ENDS ======-->
+<!--====== PAGE BANNER PART START ======-->
+<!--====== PAGE BANNER PART ENDS ======-->
+<!--====== SHOP PART START ======-->
+<section  id="shop-single" class=" gray-bg">
+  <div class="section ">
+    <div class="container shop-details">
+      <div class="container main">
+<h1 style="text-align: center;">Frequently Asked Questions</h1>
+
+<br><br>
+<ul style="list-style: none;">
+  <li>
+    <h5>How to create an account?</h5>
+    <p>You need to create an account before taking a course. Click on Menu Icon (Three horizontal lines) present on the top left of the Store Screen. From the opened menu, click on Login/Register button. Click on Sign Up. Enter your Email Id &amp; Password to register for an account. </p>
+  </li>
+  <li>
+    <h5>How to use Access Codes?</h5>
+    <p>You need to create an account on the app to use the access codes. After Successful login, click on the Menu Icon present on the top left of the Store Screen. From the opened menu, click on My Courses Button. On the opened screen, click on the Gift Icon present on the Top Right of the Screen. Enter your Access Code here. Respective Course will be added to your My Courses section.</p>
+  </li>
+  <li>
+    <h5>How to take a Course?</h5>
+    <p>After you have purchased the Course or used the access code of the course, the course would be added to your My Course Section. Click on the Course image to start the course.</p>
+  </li>
+  <li>
+    <h5>I have issues with Login, what should I do?</h5>
+    <p>You can click on Forgot Password link to reset your password from the login screen.  We will send the new password to your registered email address. Try to login with the new password.<br>
+If the issue still persists, drop an email to <b>onlineyespublications@gmail.com</b> with the issue details.
+</p>
+  </li>
+  <li>
+    <h5>I am unable to access the Course, what should I do?</h5>
+    <p>Please check whether you are using the same email, which was used for purchasing/using the access code. Check for the course in your My Course section. If the course is still not available, please drop an email to <b>onlineyespublications@gmail.com</b> </p>
+  </li>
+  <li>
+    <h5>How to report an issue on the app?</h5>
+    <p> For any other issues, please drop an email to <b>onlineyespublications@gmail.com</b> with the complete issue details.</p>
+  </li>
+</ul>
+</div>
+    </div>
+  </div>
+  <!-- container -->
+</section>
+<!--====== COURSES PART ENDS ======-->
+<!--====== FOOTER PART START ======-->
+<footer id="footer-part">
+  <!-- footer top -->
+  <div class="footer-copyright pt-10 pb-25">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="copyright text-md-left text-center pt-15">
+              <p>© Copyrights 2024 Yes Publications All rights reserved. </p>
+            </div>
+          </div>
+        </div>
+        <!--<div class="col-md-4">
+          <div class="copyright text-md-right text-center pt-15">
+            <p>Designed by <span>Futuristic</span> </p>
+          </div>
+        </div>-->
+        <a href="{% url 'faqs'%}" style="color:#ffc600;">FAQs</a> &nbsp; &nbsp; &nbsp; &nbsp; <a href="{% url 'aboutus'%}" style="color:#ffc600;">About Us</a> &nbsp; &nbsp; &nbsp; &nbsp; 
+        <a href="{% url 'contact'%}" style="color:#ffc600;">Contact Us</a> &nbsp; &nbsp; &nbsp; &nbsp; 
+        <a href="{% url 'terms_of_use'%}" style="color:#ffc600;">Terms of Use</a> &nbsp; &nbsp; &nbsp; &nbsp;
+         <a href="{% url 'privacy_policy'%}" style="color:#ffc600;">Privacy Policy</a> &nbsp; &nbsp; &nbsp; &nbsp; 
+         <a href="{% url 'refund_policy'%}" style="color:#ffc600;">Refund Policy</a> &nbsp; &nbsp; &nbsp; &nbsp; </div>
+
+      <!-- row -->
+    </div>
+    <!-- container -->
+  </div>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <a href="https://api.whatsapp.com/send?phone=919550484822&amp;text=." class="float" target="_blank"> <i class="fa fa-whatsapp my-float"></i> </a>
+  <center>
+    <a href="tel:+91  9550484822" id="callnowbutton" style="font-size:25px; padding-top:15px; color:#FFF;"><i class="fa fa-phone"></i> 91 9550484822 </a>
+  </center>
+  <!-- footer copyright -->
+</footer>
+<!--====== FOOTER PART ENDS ======-->
+<!--====== BACK TO TP PART START ======-->
+<a href="#" class="back-to-top"><i class="fa fa-angle-up"></i></a>
+<!--====== BACK TO TP PART ENDS ======-->
+    
+<script src="{% static 'js/vendor/modernizr-3.6.0.min.js' %}"></script>
+<script src="{% static 'js/vendor/jquery-1.12.4.min.js' %}"></script>
+<!--====== Bootstrap js ======-->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!--====== Slick js ======-->
+<script src="{% static 'js/slick.min.js' %}"></script>
+<!--====== Magnific Popup js ======-->
+<script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+<!--====== Counter Up js ======-->
+<script src="{% static 'js/waypoints.min.js' %}"></script>
+<script src="{% static 'js/jquery.counterup.min.js' %}"></script>
+<!--====== Nice Select js ======-->
+<script src="{% static 'js/jquery.nice-select.min.js' %}"></script>
+<!--====== Nice Number js ======-->
+<script src="{% static 'js/jquery.nice-number.min.js' %}"></script>
+<!--====== Count Down js ======-->
+<script src="{% static 'js/jquery.countdown.min.js' %}"></script>
+<!--====== Validator js ======-->
+<script src="{% static 'js/validator.min.js' %}"></script>
+<!--====== Ajax Contact js ======-->
+<script src="{% static 'js/ajax-contact.js' %}"></script>
+<!--====== Main js ======-->
+<script src="{% static 'js/main.js' %}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDC3Ip9iVC0nIxC6V14CKLQ1HZNF_65qEQ"></script>
+<script src="{% static 'js/map-script.js' %}"></script>
+
+</body>
+</html>

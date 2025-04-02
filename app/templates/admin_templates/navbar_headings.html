@@ -1,0 +1,62 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="form-control">
+        {% for i in category %}
+        <div>   
+            <input type="checkbox" name="category" id="{{ i.id }}" data-id="{{ i.category.id }}" {% if i.status %}checked{% endif %}>
+        {{ i.category.name }}
+        </div>
+        {% endfor %}
+    </br>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        function updateCheckboxState() {
+            // Get all checked checkboxes
+            var checkedCount = $('input[type="checkbox"]:checked').length;
+            
+            // Disable unchecked checkboxes if 4 are checked
+            $('input[type="checkbox"]').each(function () {
+                if (!$(this).is(':checked') && checkedCount >= 50) {
+                    $(this).prop('disabled', true);
+                } else {
+                    $(this).prop('disabled', false);
+                }
+            });
+        }
+
+        // Call initially to apply rules
+        updateCheckboxState();
+
+        $('input[type="checkbox"]').change(function () {
+            var categoryId = $(this).data('id');
+            var status = $(this).is(':checked');
+
+            $.ajax({
+                url: "{% url 'save_display_category' %}",
+                type: "POST",
+                data: {
+                    'category_id': categoryId,
+                    'status': status
+                },
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    alert(response.message);
+                    updateCheckboxState(); // Update the state after change
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                    alert("Something went wrong!");
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

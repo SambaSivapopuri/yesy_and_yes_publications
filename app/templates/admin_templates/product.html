@@ -1,0 +1,180 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+<style>
+  .preview-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .preview-container img {
+    margin: 10px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+  }
+</style>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Add Product</h5>
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{error}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    <form class="row g-3" method="post" enctype="multipart/form-data"> 
+      {% csrf_token %}
+      
+      <div class="col-md-6">
+        <label for="name">Product Name</label>
+        <input type="text" id="name" class="form-control" placeholder="Product Name" name="name">
+      </div>
+      
+      <div class="col-md-6">
+        <label for="category">Category</label>
+        <select id="category" name="category" class="form-select">
+          <option value="">Select Category</option>
+          {% for category in categories %}
+          <option value="{{ category.id }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      <div class="col-md-6">
+        <label for="subcategory">Subcategory</label>
+        <select id="subcategory" name="subcategory" class="form-select">
+          <option value="">Select Subcategory</option>
+        </select>
+      </div>
+      
+      <div class="col-md-6">
+        <label for="qty">Quantity</label>
+        <input type="number" id="qty" class="form-control" placeholder="Quantity" name="qty">
+      </div>
+      
+      <div class="col-md-6">
+        <label for="price">Product Price</label>
+        <input type="number" id="price" class="form-control" placeholder="Product Price" name="price">
+      </div>
+      
+      <div class="col-md-6">
+        <label for="discount">Product Discount (%)</label>
+        <input type="number" id="discount" class="form-control" placeholder="Product Discount (Only Digit)%" name="discount">
+      </div>
+      
+      <div class="col-md-6">
+        <label for="shipping_charge">Shipping Charge</label>
+        <input type="number" id="shipping_charge" class="form-control" placeholder="Shipping Charge" name="shipping_charge">
+      </div>
+      
+      <div class="col-md-6">
+        <label for="seller_name_or_shop_name">Seller Name / Shop Name</label>
+        <input type="text" id="seller_name_or_shop_name" class="form-control" placeholder="Seller Name / Shop Name" name="seller_name_or_shop_name">
+      </div>
+      
+      <div class="col-md-6">
+        <label for="product_type">Product Type (Gms, kg, ltr, ml, pcs)</label>
+        <input type="text" id="product_type" name="product_type" placeholder="Product (Gms, kg, ltr, ml, pcs)" class="form-control">
+      </div>
+      
+      <div class="col-md-6">
+        <label for="imageUpload">Upload Image</label>
+        <input type="file" class="form-control" id="imageUpload" name="img" accept=".jpg, .jpeg, .png">
+      </div>
+      
+      <div class="col-md-6">
+        <label>Category Available</label>
+        <input type="checkbox" checked name="check">
+      </div>
+      
+      <div class="col-md-6">
+        <label>Out of Stock?</label>
+        <input type="checkbox" name="stock">
+      </div>
+      
+      <div class="col-md-6">
+        <label>Send Notification?</label>
+        <input type="checkbox" checked name="send_notification">
+      </div>
+      
+      <div class="col-md-6">
+        <label>Product Publish or Unpublish?</label>
+        <input type="checkbox" checked name="publish">
+      </div>
+      
+      <div class="col-md-12">
+        <label for="imageRelatedUpload">Upload Related Images</label>
+        <input type="file" class="form-control" multiple id="imageRelatedUpload" name="related_img" accept=".jpg, .jpeg, .png">
+      </div>
+      
+      <div class="col-md-12">
+        <label for="product_description">Product Small Description</label>
+        <textarea class="form-control" id="product_description" placeholder="Product Small Description" name="product_description"></textarea>
+      </div>
+      
+      <div class="col-md-4 preview-container" id="img_previewContainer"></div>
+      <div class="col-md-8 preview-container" id="previewContainer"></div>
+      
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-secondary">Reset</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $("#category").change(function () {
+      var categoryId = $(this).val();
+      $("#subcategory").empty().append('<option value="">Select Subcategory</option>'); 
+      if (categoryId) {
+        $.ajax({
+          url: "{% url 'get_subcategories' %}",
+          data: { 'category_id': categoryId },
+          success: function (data) {
+            $.each(data, function (index, subcategory) {
+              $("#subcategory").append('<option value="' + subcategory.id + '">' + subcategory.name + '</option>');
+            });
+          },
+          error: function () {
+            alert('Failed to fetch subcategories.');
+          }
+        });
+      }
+    });
+
+    document.getElementById("imageUpload").addEventListener("change", function (event) {
+      let file = event.target.files[0];
+      if (file) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+          let preview = document.createElement("img");
+          preview.src = e.target.result;
+          preview.id = "preview";
+          document.getElementById("img_previewContainer").appendChild(preview);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    document.getElementById("imageRelatedUpload").addEventListener("change", function (event) {
+      var previewContainer = document.getElementById("previewContainer");
+      previewContainer.innerHTML = '';
+      var files = event.target.files;
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          var img = document.createElement("img");
+          img.src = e.target.result;
+          previewContainer.appendChild(img);
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+</script>
+{% endblock %}

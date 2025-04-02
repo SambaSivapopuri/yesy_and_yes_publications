@@ -1,0 +1,110 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        {% if messages %}
+            {% for message in messages %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <h5 class="card-title">Update Category</h5>
+
+        <!-- Update Category Form -->
+        <form class="row g-3" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Category Name -->
+            <div class="col-md-12">
+                <label>Category Name:</label>
+                <input type="text" class="form-control" name="name" value="{{ category.name }}" required>
+            </div>
+            <div class="col-md-6">
+                <label>Category Available:</label><br>
+                <input type="checkbox" name="check" {% if category.status %}checked{% endif %}> Available
+            </div>
+            <!-- Upload New Image -->
+            <div class="col-md-6">
+                <label>Upload New Image:</label>
+                <input type="file" class="form-control" id="imageUpload" name="img" accept=".jpg, .jpeg, .png">
+            </div>
+
+            <!-- Category Available Checkbox -->
+           
+
+            <!-- Current Image Display -->
+            {% if category.image %}
+            <div class="col-md-12">
+                <label>Current Image:</label><br>
+                <img id="oldPreview" src="{{ category.image.url }}" alt="Category Image" style="width: 100px; height: 100px;">
+                <br>
+                <input type="checkbox" id="removeImage" name="remove_image"> <span id="delete">Delete current image</span>
+            </div>
+            {% endif %}
+
+            <!-- New Image Preview (Initially Hidden) -->
+            <div class="col-md-12" id="newImageContainer" style="display: none;">
+                <label>New Image Preview:</label><br>
+                <img id="newPreview" src="" alt="New Image Preview" style="width: 100px; height: 100px;">
+            </div>
+
+            <!-- Form Actions -->
+            <div class="text-center">
+                <button type="submit" id="submit_update" class="btn btn-primary">Update</button>
+                <a href="{% url 'category_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript for Image Preview -->
+<script>
+    var button = document.getElementById('submit_update');
+    document.getElementById("imageUpload").addEventListener("change", function(event) {
+        let file = event.target.files[0];
+
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                let oldPreview = document.getElementById("oldPreview");
+                let newPreview = document.getElementById("newPreview");
+                let newImageContainer = document.getElementById("newImageContainer");
+
+                // Hide the old image
+                if (oldPreview) {
+                    oldPreview.style.display = "none";
+                    document.getElementById("delete").style.color = "red";
+                    button.disabled = true; 
+                }
+
+                // Show the new preview image
+                newPreview.src = e.target.result;
+                newImageContainer.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // If no file is selected, restore the old image
+            if (document.getElementById("oldPreview")) {
+                document.getElementById("oldPreview").style.display = "block";
+            }
+            document.getElementById("newImageContainer").style.display = "none";
+        }
+    });
+
+    // Remove old image checkbox functionality
+    document.getElementById("removeImage")?.addEventListener("change", function () {
+        let oldPreview = document.getElementById("oldPreview");
+        if (this.checked && oldPreview) {
+            oldPreview.style.display = "none";
+            button.disabled = false;
+        } else if (oldPreview) {
+            oldPreview.style.display = "block";
+        }
+    });
+</script>
+
+{% endblock %}

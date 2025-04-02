@@ -1,0 +1,57 @@
+{% extends "nav_bar.html" %}
+{% load static %}
+{% block content %}
+<!--====== SEARCH BOX PART ENDS ======-->
+<!--====== PAGE BANNER PART START ======-->
+<!--====== PAGE BANNER PART ENDS ======-->
+<!--====== SHOP PART START ======-->
+<section id="shop-single" class=" gray-bg">
+  <div class="section ">
+    <div class="container shop-details">
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive shop_cart_table"> <br>
+            <br>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th class="product-thumbnail">&nbsp;</th>
+                  <th class="product-name">Product</th>
+                  <th class="product-price">Total Price</th>
+                  <th class="product-price">Price</th>
+                  <th class="product-price">Discount</th>
+                  <th class="product-quantity">Shipping Charge</th>
+                  <!--<th class="product-quantity">Tax</th>-->
+                  <th class="product-subtotal">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="product-thumbnail"><a href="#"><img src="{% if product.image %}{{ product.image.url }}{% endif %}" alt="product1"></a></td>
+                  <td class="product-name" data-title="Product"><a href="#">{{product.name}}</a></td>
+                  <td class="product-price" data-title="totalPrice">Rs. {{product.price}}</td>
+                  <td class="product-price" data-title="discount"> {{product.get_final_price}}</td>
+                  <td class="product-price" data-title="Price">Rs. {{product.discount}} Off</td>
+                  <td class="product-subtotal" data-title="Shipping"> {{product.shipping_charge}} </td>
+                  <!-- <td class="product-subtotal" data-title="Tax">
+                                     (0)
+                          	</td>-->
+                  <td class="product-subtotal" data-title="Total">{{product.total_price}}</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr> </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <br>
+      <a href="{% url 'billing' %}" class="btn btn-default">Proceed To CheckOut</a> </div>
+      
+    </div>
+  </div>
+  <!-- container -->
+</section>
+<!--====== COURSES PART ENDS ======-->
+{% endblock %}

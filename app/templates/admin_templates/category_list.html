@@ -1,0 +1,134 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-body">
+            {% if messages %}
+            {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+            <div class="d-flex justify-content-between flex-wrap">
+                <h5 class="card-title">Category List</h5>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table datatable">
+                    <thead>
+                        <tr>
+                            <th scope="col">S.No</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Images</th>
+                            <th scope="col">Status</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in page_obj %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
+                            <td>{{ category.name }}</td>
+                            <td>
+                                {% if category.image %}
+                                <img src="{{ category.image.url }}" alt="{{ category.name }}" class="img-fluid" style="max-width: 50px;">
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if category.status %}
+                                <span class="badge bg-success">Active</span>
+                                {% else %}
+                                <span class="badge bg-danger">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="btn btn-sm btn-primary" href="{% url 'update_category' category.id %}">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-danger delete-btn" href="{% url 'remove_category' category.id %}" data-id="{{ category.id }}">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No Categories Found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-start">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo; First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <a class="page-link" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).on('click', '.delete-btn', function() {
+        var categoryId = $(this).data('id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You will not be able to remove this category! Related sub-categories and products will also be removed.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `{% url 'remove_category' 0 %}`.replace('0', categoryId),
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        Swal.fire('Deleted!', response.message, 'success').then(() => {
+                            location.reload();
+                        });
+                    },
+                    error: function(response) {
+                        Swal.fire('Error!', response.responseJSON?.error || 'Failed to delete category.', 'error');
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

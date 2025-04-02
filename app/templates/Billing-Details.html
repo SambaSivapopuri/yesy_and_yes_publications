@@ -1,0 +1,159 @@
+{% extends "nav_bar.html" %}
+{% load static %}
+{% block content %}
+<!--====== HEADER PART ENDS ======-->
+<!--====== SEARCH BOX PART START ======-->
+<div class="search-box">
+  <div class="search-form">
+    <div class="closebtn"> <span></span> <span></span> </div>
+    <form action="#">
+      <input type="text" placeholder="Search by keyword">
+      <button><i class="fa fa-search"></i></button>
+    </form>
+  </div>
+  <!-- search form -->
+</div>
+<!--====== SEARCH BOX PART ENDS ======-->
+<!--====== PAGE BANNER PART START ======-->
+<!--====== PAGE BANNER PART ENDS ======-->
+<!--====== SHOP PART START ======-->
+<section id="shop-single" class=" gray-bg">
+  <div class="section ">
+    <div class="container  shop-details">
+      <div class="row">
+        <div class="col-12">
+          <div class="medium_divider clearfix"></div>
+        </div>
+      </div>
+      <span> </span>
+      <form method="post"  name="bill-form" id="bill-form"> {% csrf_token %}
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="heading_s1">
+              <h4>Shipping Details</h4>
+            </div>
+            <div class="form-group col-md-12">
+              <h6 style="color:#a62024">*All Fields Are are Mandatory don't Leave Blank .Fill All Deatils*</h6>
+              <br>
+              <br>
+              <input type="text" class="form-control" id="fname" name="fname" placeholder="Full Name *" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <label class="checkbox-inline">
+                <input type="radio" id="relation" name="relation" value="S/o">
+                S/o </label>
+              <label class="checkbox-inline">
+                <input type="radio" id="relation" name="relation" value="D/o">
+                D/o </label>
+              <label class="checkbox-inline">
+                <input type="radio" id="relation" name="relation" value="W/o">
+                W/o </label>
+            </div>
+            <div class="form-group col-md-12">
+              <input type="text" class="form-control" id="relation_name" name="lname" placeholder="S/o,D/o,W/o *" autocomplete="off">
+            </div>
+            <!--<div class="form-group col-md-12">
+              <input class="form-control"  type="text" id="cname" name="cname" placeholder="Landmark" autocomplete="off">
+            </div>-->
+            <div class="form-group col-md-12">
+              <input type="text" class="form-control" id="doorno" name="doorno" placeholder="Door No *" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <input type="text" class="form-control" id="billing_address" name="billing_address" placeholder="Address Line1" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <input type="text" class="form-control" name="billing_address2" id="billing_address2" placeholder="Address Line2" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <input type="text" class="form-control" name="village" id="village" placeholder="Village/Mandal" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <input class="form-control" type="text" name="city" id="city" placeholder="City / Town *" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <input class="form-control" type="text" name="state" id="state" placeholder="State / County *" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <input class="form-control" type="text" name="zipcode" id="zipcode" placeholder="Postcode / ZIP *" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <input class="form-control" type="text" maxlength="10" name="phone" id="phone" placeholder="Phone *" autocomplete="off">
+            </div>
+            <div class="form-group col-md-12">
+              <input class="form-control" type="text" name="email" id="email" placeholder="Email address *" autocomplete="off">
+            </div>
+            <div class="form-group mb-0 mt-2 col-md-12">
+              <div class="heading_s1">
+                <h4>Additional information</h4>
+              </div>
+              <textarea rows="5" class="form-control" id="content" name="content" placeholder="Order notes"></textarea>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="order_review">
+              <div class="heading_s1">
+                <h4>Your Orders</h4>
+              </div>
+              <div class="table-responsive order_table">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{{product.name}} <span class="product-qty"></span></td>
+                      <td>Rs. {{product.price}}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th>Total Amount</th>
+                      <td class="product-subtotal">Rs. {{product.get_final_price}}</td>
+                    </tr>
+                    <tr>
+                      <th>Discount</th>
+                      <td class="product-subtotal">Rs. {{product.discount_mount}} Off</td>
+                    </tr>
+                    <!-- <tr>
+                    <th>Cart Sub Total</th>
+                    <td class="product-subtotal">Rs. 209</td>
+                  </tr>
+                  <tr>
+                    <th>Total Number Of Books</th>
+                    <td class="product-subtotal">Rs. </td>
+                  </tr>-->
+                    <tr>
+                      <th>Shipping</th>
+                      <td>Rs. {{product.shipping_charge}}</td>
+                    </tr>
+                    <!-- <tr>
+                    <th>Tax</th>
+                    <td></td>
+                  </tr>  -->
+                    <tr>
+                      <th>Total</th>
+                      <td class="product-subtotal">Rs. {{product.total_price}}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <input type="submit" name="submit" class="btn btn-default" value="Place Order">
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- container -->
+</section>
+<!--====== COURSES PART ENDS ======-->
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+<script>
+  const cashfree = Cashfree({
+    mode:"sandbox" //or production
+});
+</script>
+{% endblock %}

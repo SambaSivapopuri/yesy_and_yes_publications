@@ -1,0 +1,92 @@
+{% extends "admin_templates/base.html" %}
+{% load static %}
+{% block content %}
+<div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Create a New Order</h5>
+      {% if errors %}
+      <ul>
+          {% for error in errors %}
+              <li style="color: red;">{{ error }}</li>
+          {% endfor %}
+      </ul>
+  {% endif %}
+
+      <form class="row g-3" method="post" > 
+        {% csrf_token %}
+        <div class="col-md-6">
+            <label>Date:</label>
+            <input type="date" name="date" class="form-control" >
+        </div>
+        <div class="col-md-6">
+            <label>Product Name:</label>
+        <textarea name="product_name" class="form-control"></textarea>  
+        </div>
+        <div class="col-md-6">
+            <label>Payment Amount:</label>
+        <input type="text" name="pay_amount" class="form-control" >
+        </div>
+        <div class="col-md-6">
+            <label>Name:</label>
+        <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="col-md-6">
+            <label>Phone Number:</label>
+            <input type="text" name="phone" maxlength="10" class="form-control"  required>
+        </div>
+        <div class="col-md-6">
+            <label>Address:</label>
+        <textarea name="address" class="form-control" ></textarea>
+        </div>
+        <div class="col-md-6">
+            <label>Zip Code:</label>
+        <input type="text" name="zip_code" class="form-control">
+        </div>
+        <div class="col-md-6">
+            <label>Quantity:</label>
+        <input type="text" name="quntity" class="form-control">
+        </div>
+        <div class="col-md-6">
+            <label>Payment Status:</label>
+        <input type="checkbox" name="pay_status" >
+        </div>
+        <div class="col-md-6">
+            <label>Transaction ID:</label>
+        <input type="text" name="transaction_id" class="form-control" >
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Order</button>
+    </div>
+</div>
+    <h2></h2>
+
+
+    <form method="post">
+        {% csrf_token %}
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    </form>
+
+
+{% endblock %}
