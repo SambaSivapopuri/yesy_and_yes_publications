@@ -22,7 +22,7 @@ urlpatterns = [
     path('search/', search_product, name='search_products'),
     path("user_orders_list/",user_orders_list,name="user_orders_list"),
     # path('create-payment/', create_payment, name='create_payment'),
-    path('payment-success/<int:order>/<str:mobile>/<str:amount>/', payment_success, name='payment_success'),
+    path('payment-success/<str:order>/<str:mobile>/<str:amount>/', payment_success, name='payment_success'),
     path('payment-webhook/', payment_webhook, name='payment_webhook'),
     path('update-order-status/', update_order_status, name='update_order_status'),
 
@@ -41,6 +41,7 @@ urlpatterns = [
     path("order_list/",order_list,name="order_list"),
     path("update_order/<int:id>/",update_order,name="update_order"),
     path('download-orders/<str:format>/', download_orders, name='download_orders'),
+    path("update_check_status/",update_check_status,name="update_check_status"),
     path('p_order/',p_order,name="p_order"),
     path("p_order_list/",p_order_list,name="p_order_list"),
     path('upload/', FileUploadView.as_view(), name='file_upload'),

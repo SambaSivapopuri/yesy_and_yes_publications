@@ -130,7 +130,7 @@ class Order(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, related_name='order_created', on_delete=models.SET_NULL, null=True, blank=True)
     updated_by = models.ForeignKey(User, related_name='order_updated', on_delete=models.SET_NULL, null=True, blank=True)
-
+    check_status=models.BooleanField(default=False,null=True,blank=True)
     def save(self, *args, **kwargs):
         if not self.order_number:
             last_order = Order.objects.filter(product=self.product).order_by('-id').first()

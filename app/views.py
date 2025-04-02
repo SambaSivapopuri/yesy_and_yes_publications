@@ -264,7 +264,7 @@ def payment_webhook(request):
         return JsonResponse({"status": "success"})
 import requests
 from django.conf import settings
-def payment_success(request, mobile, order, amount):
+def payment_success(request,order, mobile, amount):
     url = f"https://api.cashfree.com/pg/orders/{order}"
     headers = {
         "x-api-version": "2022-09-01",

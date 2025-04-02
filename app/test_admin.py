@@ -120,7 +120,7 @@ def add_category(request):
     return render(request, 'admin_templates/add_category.html')
 
 def category_list(request):
-    categories = Category.objects.filter(status=True)
+    categories = Category.objects.filter(status=True).order_by("-id")
     
     # Adding sub-category count for each category
     for category in categories:
@@ -452,7 +452,20 @@ def order_list(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'admin_templates/order_list.html', {"page_obj": page_obj})
+@csrf_exempt
+def update_check_status(request):
+    if request.method == 'POST':
+        product_id = request.POST.get('order_id')
+        status = request.POST.get('status') == 'true'
 
+        try:
+            nav_item = Order.objects.get(id=product_id)
+            nav_item.check_status = status
+            nav_item.save()
+            return JsonResponse({'success': True, 'message': 'Data updated successfully'})
+        except Nav_bar.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Nav item not found'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
 def update_order(request, id):
     order = get_object_or_404(Order, id=id)
     customer = CustomerOrderDetails.objects.filter(order=order).first()
