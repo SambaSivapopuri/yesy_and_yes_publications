@@ -3,7 +3,14 @@
 {% block content %}
 <div class="card">
     <div class="card-body">
-        {% if messages %}
+      <h5 class="card-title">Add Scrolling</h5>
+      {% if error %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ error }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endif %}
+      {% if messages %}
             {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
           {{ message }}
@@ -11,48 +18,152 @@
         </div>
         {% endfor %}
         {% endif %}
-        <h5 class="card-title">Scrolling</h5>
+      <!-- Form with Labels and Validation -->
+      <form class="row g-3" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> 
+        {% csrf_token %}
 
-       {{data}}
+        <div class="col-md-12">
+          <label for="categoryName" class="form-label">Scrooling Name</label>
+          <input type="text" class="form-control" id="categoryName" name="name" required>
+          <div class="invalid-feedback">Please enter a Scrooling name.</div>
+        </div>
+        <div class="col-md-6">
+            <label for="inputState" class="form-label">Product</label>
+              <select id="inputState" name='category' class="form-select">
+                  <option value=""> Select Product</option>
+                  {% for item in data %}<option value="{{item.id}}">{{item.name}}</option>{% endfor %}
+                </select>
+            </div>
+        <div class="col-md-6">
+          <label for="imageUpload" class="form-label"> Image</label>
+          <input type="file" class="form-control" id="imageUpload" name="img" accept=".jpg, .jpeg, .png" required>
+          <div class="invalid-feedback">Please upload a valid image (JPG, JPEG, PNG).</div>
+        </div>
+
+        {% comment %} <div class="col-md-6">
+          <label class="form-label"> Availability</label>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="categoryAvailable" checked name="check">
+            <label class="form-check-label" for="categoryAvailable">Available</label>
+          </div>
+        </div> {% endcomment %}
+
+        <div class="col-12">
+          <img id="preview" src="#" alt="Image Preview" style="display: none; width: 100px; height: 100px;" class="mt-2">
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="reset" class="btn btn-secondary">Reset</button>
+        </div>
+      </form>
     </div>
 </div>
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between flex-wrap">
+            <h5 class="card-title">Scrolling List</h5>
+        </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <div class="table-responsive">
+            <table class="table datatable">
+                <thead>
+                    <tr>
+                        <th scope="col">S.No</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Images</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Dispaly</th>
+                        {% comment %} <th>Edit</th>
+                        <th>Delete</th> {% endcomment %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in page_obj %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter0|add:page_obj.start_index }}</th>
+                        <td>{{ category.name }}</td>
+                        <td>
+                            {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }}" class="img-fluid" style="max-width: 50px;">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if category.status %}
+                            <span class="badge bg-success">Active</span>
+                            {% else %}
+                            <span class="badge bg-danger">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <input type="checkbox" name="category" id="{{ category.id }}" data-id="{{ category.id }}" {% if category.display %}checked{% endif %}>
+                        </td>
+                        {% comment %} <td>
+                            <a class="btn btn-sm btn-primary" href="{% url 'update_category' category.id %}">
+                                <i class="bi bi-pencil-square"></i> Edit
+                            </a>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-danger delete-btn" href="{% url 'remove_category' category.id %}" data-id="{{ category.id }}">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </td> {% endcomment %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center">No Categories Found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    // Function to toggle the URL input field visibility based on checkbox state
-    function toggleUrlInput(checkbox, productId) {
-        var urlInputDiv = document.getElementById('url-input-' + productId);
-        if (checkbox.checked) {
-            urlInputDiv.style.display = 'block';
-            updateNavBarStatus(productId);
-        } else {
-            urlInputDiv.style.display = 'none';
-            updateNavBarStatus(productId);
+    $(document).ready(function () {
+
+        function updateCheckboxState() {
+            // Get all checked checkboxes
+            var checkedCount = $('input[type="checkbox"]:checked').length;
+            
+            // Disable unchecked checkboxes if 4 are checked
+            $('input[type="checkbox"]').each(function () {
+                if (!$(this).is(':checked') && checkedCount >= 50) {
+                    $(this).prop('disabled', true);
+                } else {
+                    $(this).prop('disabled', false);
+                }
+            });
         }
-    }
 
-    // AJAX function to update the NavBar status and URL
-    function updateNavBarStatus(productId) {
-        var checkbox = document.getElementById('checkbox-' + productId);
-        var status = checkbox.checked;
-        var urlInput = document.getElementById('url-' + productId).value;
+        // Call initially to apply rules
+        updateCheckboxState();
 
-        $.ajax({
-            type: "POST",
-            url: "{% url 'update_nav_bar' %}",  
-            data: {
-                'product_id': productId,
-                'status': status,
-                'url': urlInput,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            },
-            success: function(response) {
-                console.log(response.message);
-            },
-            error: function(xhr, errmsg, err) {
-                console.log('Error:', errmsg);
-            }
+        $('input[type="checkbox"]').change(function () {
+            var categoryId = $(this).data('id');
+            var status = $(this).is(':checked');
+            console.log(categoryId);
+            $.ajax({
+                url: "{% url 'save_display_nav_items' %}",
+                type: "POST",
+                data: {
+                    'nav_id': categoryId,
+                    'status': status
+                },
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    alert(response.message);
+                    updateCheckboxState(); // Update the state after change
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                    alert("Something went wrong!");
+                }
+            });
         });
-    }
+    });
 </script>
 {% endblock %}

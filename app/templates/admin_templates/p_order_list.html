@@ -15,12 +15,10 @@
         {% endif %}
                     <h1 class="card-title">Upload CSV or Excel File</h1>
                     <div class="row">
-                        <div class="col-md-6">
-                            <input type="file" id="fileInput" class="form-control" />
-                        </div>
-                        <div class="col-md-6">
-                            <button onclick="uploadFile()" class="btn btn-primary">Upload</button>
-                        </div>
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <input type="file" name="file" id="fileInput" accept=".csv, .xlsx, .xls" required />
+                            <button type="submit">Upload</button>
+                        </form>
                     </div>
             <p id="message"></p>
                 </div>
@@ -55,11 +53,7 @@
                                         <th style="min-width: 120px;">Zipcode</th>
                                         <th style="min-width: 100px;">Transaction Id</th>
                                         <th style="min-width: 100px;">Seller Name</th>
-                                        <th style="min-width: 140px;">Action</th>
-                                        <th style="min-width: 180px;">Barcode</th>
-                                        <th style="min-width: 150px;">City</th>
                                         <th style="min-width: 100px;">Address</th>
-                                        <th style="min-width: 100px;">Weight</th>
 
                                     </tr>
                                 </thead>
@@ -114,31 +108,27 @@
             </div>
         </div>
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function uploadFile() {
-        const file = $('#fileInput')[0].files[0];
-        if (!file) {
-            $('#message').text('Please select a file.');
-            return;
-        }
+    $('#uploadForm').on('submit', function (e) {
+        e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('file', file);
+        let formData = new FormData();
+        formData.append('file', $('#fileInput')[0].files[0]);
 
         $.ajax({
-            url: 'http://127.0.0.1:8000/upload/',
+            url: '/upload-orders/',
             type: 'POST',
             data: formData,
-            processData: false,
             contentType: false,
+            processData: false,
             success: function (response) {
-                $('#message').text(response.message);
+                alert(response.message || 'Upload complete');
             },
             error: function (xhr) {
-                const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred';
-                $('#message').text(errorMessage);
+                alert('Error: ' + xhr.responseJSON?.error || 'Something went wrong');
             }
         });
-    }
+    });
 </script>
 {% endblock %}

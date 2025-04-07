@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from .test_admin import *
+from .admin_views import *
 urlpatterns = [
     path('',index,name="index"),
     path("contact/",contact,name="contact"),
@@ -44,13 +44,14 @@ urlpatterns = [
     path("update_check_status/",update_check_status,name="update_check_status"),
     path('p_order/',p_order,name="p_order"),
     path("p_order_list/",p_order_list,name="p_order_list"),
-    path('upload/', FileUploadView.as_view(), name='file_upload'),
+    path('upload-orders/', upload_orders, name='upload_orders'),
     path("track/<int:id>/",track_order,name="track_order"),
 
     path('update_nav_bar/', update_nav_bar, name='update_nav_bar'),
     path("nav_items/",nav_items,name="nav_items"),
     path("add_nav_item/",add_nav_item,name="add_nav_item"),
     path("navbar_headings/",navbar_headings,name="navbar_headings"),
+    path("save_display_nav_items/",save_display_nav_items,name="save_display_nav_items"),
     path('save_display_category/', save_display_category, name='save_display_category'),
     path('remove-category/<int:id>/', remove_category, name='remove_category'),
     path('remove-sub-category/<int:id>/', remove_sub_category, name='remove_sub_category'),

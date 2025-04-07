@@ -14,6 +14,7 @@ import uuid
 class Otp(models.Model):
     mobile=models.CharField(max_length=10,blank=False,null=False)
     otp = models.CharField(max_length=6, blank=False, null=False)
+    order_number=models.CharField(max_length=255,blank=False,null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -107,7 +108,14 @@ class Product(models.Model):
     
     class Meta:
         db_table="product"
-
+class ProductRelatedPdf(models.Model):
+    product = models.ForeignKey(Product, related_name='product_pdf', on_delete=models.CASCADE)
+    pdf_file = models.ImageField(upload_to="product_related_pdfs/")
+    created_at = models.DateTimeField(auto_now_add=True)  # Set when created
+    updated_at = models.DateTimeField(auto_now=True)
+    status=models.BooleanField(default=True,blank=True,null=True)
+    class Meta:
+        db_table="product_related_pdf"
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name='product_images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to="product_related_images/")
@@ -134,10 +142,10 @@ class Order(models.Model):
     def save(self, *args, **kwargs):
         if not self.order_number:
             last_order = Order.objects.filter(product=self.product).order_by('-id').first()
-            last_order_count = int(last_order.order_number.split('-')[-1]) if last_order and last_order.order_number else 0
-            self.order_number = f"{self.product.name}-{last_order_count + 1}"
+            # last_order_count = int(last_order.order_number.split('-')[-1]) if last_order and last_order.order_number else 0
+            last_order_count=str(uuid.uuid4()).replace("-", "").upper()[:20]  # Generates a 10-character unique code
+            self.order_number = f"order-{last_order_count}"
         super().save(*args, **kwargs)
-
 
     class Meta:
         db_table = "orders"
@@ -219,6 +227,7 @@ class Track(models.Model):
         db_table="track "
 class Nav_bar(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
+    name=models.CharField(max_length=255,blank=False,null=False)
     image=models.ImageField(upload_to='nav_bar/', blank=True, null=True)
     status = models.BooleanField(default=True)
     display=models.BooleanField(default=False)

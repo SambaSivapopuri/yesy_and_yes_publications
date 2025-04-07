@@ -1,8 +1,10 @@
 {% extends "admin_templates/base.html" %}
 {% load static %}
 {% block content %}
-<div class="container">
-    <div class="form-control">
+<div class="card">
+    <div class="card-body">
+    <h5>Menu Heading's</h5>
+    <div class="">
         {% for i in category %}
         <div>   
             <input type="checkbox" name="category" id="{{ i.id }}" data-id="{{ i.category.id }}" {% if i.status %}checked{% endif %}>
@@ -10,6 +12,8 @@
         </div>
         {% endfor %}
     </br>
+</div>
+    </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

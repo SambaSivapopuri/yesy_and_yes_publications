@@ -67,9 +67,6 @@
                     <th style="min-width: 120px;">Address</th>
                     <th style="min-width: 120px;">Zipcode</th>
                     <th style="min-width: 100px;">Transaction Id</th>
-                    <th style="min-width: 100px;">Seller Name</th>
-                    <th style="min-width: 140px;">Action</th>
-                    <th style="min-width: 180px;">Barcode</th>
                     <th style="min-width: 150px;">City</th>
                     <th style="min-width: 100px;">Address</th>
                     <th style="min-width: 100px;">Edit</th>
@@ -112,32 +109,31 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
                           <div class="modal-body p_data">
-                            <input type="button" id="btn" class="btn btn-primary" value="Print" onclick="printDiv();" style="float:right;">
+                            <input type="button" id="btn" class="btn btn-primary" value="Print" onclick="printDiv();" style="float:right; margin:10px;">
                             <div id="divprint">
-                              <div class="row">
+                              <div class="row" style="margin:10px;">
                                 <b style="font-weight: 700; color:#000; font-size: 18px;"><u>Yes & Yes Books Publications - Order ID - 4001955231</u></b>
-                                <div class="col-md-7"></div>
+                                <div class="col-md-7"><br>
+                                  <p><b>From :</b>
+                                    YES PUBLICATIONS<br>
+                                    # 29-28-39, Surya Plaza, Dasari Vari Street,<br>
+                                    Suryaraopet, VIJAYAWADA-520 002<br>
+                                    Cell: 7377 222 999</p>
+                                </div>
                                 <div class="col-md-5 text-end">
-                                  <p><b>To :</b> {{ order.customer.customer_name }}<br>
-                                    {{ order.customer.relation }}. {{ order.customer.relation_name }}<br>
-                                    Door No:{{ order.customer.doorno }}<br>
-                                    {{ order.customer.address_line1 }}<br>
-                                    {% if address_line2 %}{{ order.customer.address_line2 }}{% endif %}</p>
+                                  <p><b>To :</b> {{ order.customer.customer_name }}
+                                    <p>{{ order.customer.relation }}. {{ order.customer.relation_name }}</p>
+                                    <p><b>Address:</b>{{ order.customer.doorno }},{{ order.customer.address_line1 }}
+                                    {% if address_line2 %},{{ order.customer.address_line2 }}{% endif %}</p>
                                   <p><b>Mobile:</b> {{ order.customer.customer_phone }}</p>
                                   <p><b>Order Id:</b> {{ order.customer.order.order_number }}</p>
                                   <p><b>Ordered Date:</b> {{ order.customer.order.created_at|date:"d-m-y" }}
                                   </p>
-                                  <p><b>Payment Method:</b> Online</p>
                                   <p><b>Transaction Id:</b> {{ order.transaction_id }}</p>
                                 </div>
                               </div>
-                              <br>
-                              <p><b>From :</b><br>
-                              YES PUBLICATIONS<br>
-                              # 29-28-39, Surya Plaza, Dasari Vari Street,<br>
-                              Suryaraopet, VIJAYAWADA-520 002<br>
-                              Cell: 7377 222 999</p>
-                              <div class="table-responsive">
+                              
+                              <div class="table-responsive" style="margin:10px;">
                                 <table class="table table-striped">
                                   <thead>
                                     <tr>
@@ -156,7 +152,7 @@
                                     <tr>
                                       <td>1</td>
                                       <td>{{ order.customer.order.product }}</td>
-                                      <td><img src="{{ order.customer.order.product.image.url}}" width="100px"></td>
+                                      <td><img src="{{ order.customer.order.product.image.url}}" width="100px" height="50px"></td>
                                       <td>{{ order.customer.order.product.discount}}%</td>
                                       <td>{{ order.customer.order.product.price}}</td>
                                       <td>{{ order.customer.order.product.discount_mount}}</td>
@@ -190,12 +186,6 @@
                     <td>{{ order.customer.address_line1 }}</td>
                     <td>{{ order.customer.zipcode }}</td>
                     <td>{{ order.transaction_id}}</td>
-
-                    <td>
-                      {{ order.customer.order.product.seller_name_or_shop_name}}
-                    </td>
-                    <td>Action</td>
-                    <td>Barcode</td>
                     <td>{{order.customer.city}}</td>
                     <td>{{order.customer.address_line1}}</td>
                     <td>

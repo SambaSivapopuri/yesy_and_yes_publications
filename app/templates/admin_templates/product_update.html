@@ -94,10 +94,17 @@
         Product Publish Or Unpublish? <input type="checkbox" {% if product.product_publish_or_unpublish %}checked{% endif %} name="publish">
       </div>  
       
-      
       <div class="col-md-6">
-        <label class="form-label">Upload New Image</label>
-        <input type="file" name="new_image" class="form-control" id="imageUpload">
+        {% if pdf.pdf_file %}<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pdfModal">
+          Open PDF
+        </button>{% else %}
+        No Pdf File Available..
+        {% endif %}
+        
+      </div> 
+      <div class="col-md-6">
+        <label class="form-label">Upload New Pdf</label>
+        <input type="file" name="pdf" class="form-control" id="pdf">
     </div>
       <div class="col-md-6">
         <label class="form-label">Upload New Images</label>
@@ -137,6 +144,42 @@
     </form>
   </div>
 </div>
+
+
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true"> 
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="pdfModalLabel">PDF Viewer</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <iframe id="pdfViewer" src="" width="100%" height="500px"></iframe>
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var pdfModal = document.getElementById("pdfModal");
+    var pdfViewer = document.getElementById("pdfViewer");
+
+    pdfModal.addEventListener("show.bs.modal", function () {
+        var pdfUrl = "{% if pdf.pdf_file %}{{ pdf.pdf_file.url }}{% else %}#{% endif %}";
+        if (pdfUrl !== "#") {
+            pdfViewer.src = pdfUrl;
+        } else {
+            console.error("PDF file not available.");
+            pdfViewer.src = ""; // Clear iframe src if no file exists
+        }
+    });
+
+    pdfModal.addEventListener("hidden.bs.modal", function () {
+        pdfViewer.src = ""; // Clear iframe when modal is closed
+    });
+});
+</script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
