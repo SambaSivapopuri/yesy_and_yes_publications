@@ -15,11 +15,11 @@
         </div>
         <div class="col-md-12" >
             <label for="book_name">Book Name</label>
-         <input type="text" name="book_name" id="book_name" class="form-control" readonly value="{{order.order.product.name}}">
+         <input type="text" name="book_name" id="book_name" class="form-control" readonly value="{% if order.order.product.name %}{{order.order.product.name}}{% else %}{{order.product_name}}{% endif %}">
         </div>
         <div class="col-md-12" >
             <label for="mobile">Mobile Number</label>
-         <input type="text" name="mobile" id="mobile" class="form-control" value="{{order.customer_phone}}" >
+         <input type="text" name="mobile" id="mobile" class="form-control" value="{% if order.customer_phone %}{{order.customer_phone}}{% else %}{{order.phone}}{% endif %}" >
         </div>     
          <br>
          <div class="text-center">

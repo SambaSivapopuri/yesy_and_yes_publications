@@ -42,10 +42,12 @@ urlpatterns = [
     path("update_order/<int:id>/",update_order,name="update_order"),
     path('download-orders/<str:format>/', download_orders, name='download_orders'),
     path("update_check_status/",update_check_status,name="update_check_status"),
+    path("update_check_p_order_status/",update_check_p_order_status,name="update_check_p_order_status"),
     path('p_order/',p_order,name="p_order"),
     path("p_order_list/",p_order_list,name="p_order_list"),
     path('upload-orders/', upload_orders, name='upload_orders'),
     path("track/<int:id>/",track_order,name="track_order"),
+    path("track_p_order/<int:id>/",track_p_order,name="track_p_order"),
 
     path('update_nav_bar/', update_nav_bar, name='update_nav_bar'),
     path("nav_items/",nav_items,name="nav_items"),

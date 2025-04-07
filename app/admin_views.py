@@ -713,6 +713,33 @@ def p_order_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request,"admin_templates/p_order_list.html",{"page_obj": page_obj})
+
+@csrf_exempt
+def update_check_p_order_status(request):
+    if request.method == 'POST':
+        product_id = request.POST.get('p_order_id')
+        status = request.POST.get('status') == 'true'
+
+        try:
+            nav_item = P_Order.objects.get(id=product_id)
+            nav_item.check_status = status
+            nav_item.save()
+            return JsonResponse({'success': True, 'message': 'Data updated successfully'})
+        except Nav_bar.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Nav item not found'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+@login_required
+def track_p_order(request,id):
+    order=P_Order.objects.get(id=id)
+    if request.method == "POST":
+        Track.objects.create(track_number=request.POST["track_no"],weight=request.POST["weight"],mobile=request.POST["mobile"],status=True)
+        order_detais=P_Order.objects.get(id=id)
+        postal_tracking(request.POST["mobile"],order_detais.p_order_number,order.pay_amount,request.POST["track_no"])
+        # order_detais.status=False
+        # order_detais.save()
+        messages.success(request, 'successful Sended..')
+        return redirect("p_order_list")
+    return render(request,"admin_templates/track.html",{"order":order})
 from datetime import datetime
 import pandas as pd
 from django.http import JsonResponse

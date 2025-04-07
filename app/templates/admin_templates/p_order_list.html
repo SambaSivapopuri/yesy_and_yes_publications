@@ -52,24 +52,22 @@
                                         <th style="min-width: 120px;">Address</th>
                                         <th style="min-width: 120px;">Zipcode</th>
                                         <th style="min-width: 100px;">Transaction Id</th>
-                                        <th style="min-width: 100px;">Seller Name</th>
-                                        <th style="min-width: 100px;">Address</th>
 
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for order in page_obj %}
                                     <tr>
-                                        <td><input type="checkbox" id="select_all" onclick="toggleAll(this)">{{
-                                            forloop.counter }}</td>
-                                        <td>{{ order.customer.order.id}}</td>
+                                        <td><input type="checkbox" name="category" id="{{ order.id }}" data-id="{{ order.id }}" {% if order.check_status %}checked{% endif %}>
+                                            {{forloop.counter }}</td>
+                                        <td>{{ order.id}}</td>
                                         {% comment %} <td><img
                                                 src="{% if product.image %}{{ product.image.url }} {% endif %}"
                                                 width="50"></td> {% endcomment %}
-                                        <td>{{ order.customer.order.created_at|date:"d-m-Y" }}</td>
-                                        <td>{{ order.customer.order.product.name }}</td>
+                                        <td>{{ order.date|date:"d-m-Y" }}</td>
+                                        <td>{{ order.product_name }}</td>
                                         <td>1</td>
-                                        <td>{{ order.customer.order.order_number }}</td>
+                                        <td>{{ order.p_order_number }}</td>
                                         <td>
                                             {% if not order.status %}
                                             <span class="badge bg-danger">Not Available</span>
@@ -77,24 +75,100 @@
                                             <span class="badge bg-success">success</span>
                                             {% endif %}
                                         </td>
-                                        <td>{{ order.total_price}}</td>
-                                        <td>{{ order.customer.customer_name }}</td>
-                                        <td>{{ order.customer.customer_phone }}</td>
-                                        <td>Preview..</td>
-                                        <td><a href="{% url 'track_order' order.id%}"><button
+                                        <td>{{ order.pay_amount}}</td>
+                                        <td>{{ order.name }}</td>
+                                        <td>{{ order.phone }}</td>
+                                        <td><button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#previewModal{{ order.id }}">
+                                            Preview
+                                          </button>
+                                      
+                                          <!-- Modal -->
+                                          <div class="modal fade" id="previewModal{{ order.id }}" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="previewModalLabel">Order Preview - {{ order.customer.order.id }}</h5>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body p_data">
+                                                  <input type="button" id="btn" class="btn btn-primary" value="Print" onclick="printDiv();" style="float:right; margin:10px;">
+                                                  <div id="divprint">
+                                                    <div class="row" style="margin:10px;">
+                                                      <b style="font-weight: 700; color:#000; font-size: 18px;"><u>Yes & Yes Books Publications - Order ID - 4001955231</u></b>
+                                                      <div class="col-md-7"><br>
+                                                        <p><b>From :</b>
+                                                          YES PUBLICATIONS<br>
+                                                          # 29-28-39, Surya Plaza, Dasari Vari Street,<br>
+                                                          Suryaraopet, VIJAYAWADA-520 002<br>
+                                                          Cell: 7377 222 999</p>
+                                                      </div>
+                                                      <div class="col-md-5 text-end">
+                                                        <p><b>To :</b> {{ order.name }}
+                                                          <p><b>Address:</b>{{ order.address}},{{ order.zip_code }}</p>
+                                                        <p><b>Mobile:</b> {{ order.phone }}</p>
+                                                        <p><b>Order Id:</b> {{ order.p_order_number }}</p>
+                                                        <p><b>Ordered Date:</b> {{ order.date|date:"d-m-y" }}
+                                                        </p>
+                                                        <p><b>Transaction Id:</b> {{ order.transaction_id }}</p>
+                                                      </div>
+                                                    </div>
+                                                    
+                                                    <div class="table-responsive" style="margin:10px;">
+                                                      <table class="table table-striped">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>Sr No.</th>
+                                                            <th>Product Name</th>
+                                                            {% comment %} <th>Product Image</th> {% endcomment %}
+                                                            {% comment %} <th>Discount</th> {% endcomment %}
+                                                            <th>Product Price</th>
+                                                            {% comment %} <th>Discount Amount</th>
+                                                            <th>Shipping Charges</th> {% endcomment %}
+                                                            <th>Product Qty</th>
+                                                            <th>Product Total</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          <tr>
+                                                            <td>1</td>
+                                                            <td>{{ order.product_name }}</td>
+                                                            {% comment %} <td><img src="{{ order.customer.order.product.image.url}}" width="100px" height="50px"></td> {% endcomment %}
+                                                            {% comment %} <td>{{ order.customer.order.product.discount}}%</td> {% endcomment %}
+                                                            <td>{{ order.pay_amount}}</td>
+                                                            {% comment %} <td>{{ order.customer.order.product.discount_mount}}</td>
+                                                            <td>{{ order.customer.order.product.shipping_charge}}</td> {% endcomment %}
+                                                            <td>1</td>
+                                                            <td>{{ order.pay_amount}}</td>
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                    <ul class="list-group">
+                                                      <li class="list-group-item">Payment Method: <span class="badge bg-primary float-end">Online</span></li>
+                                                      <li class="list-group-item">Total Price: <span class="badge bg-info float-end">{{ order.pay_amount}}</span></li>
+                                                      {% comment %} <li class="list-group-item">Discount: <span class="badge bg-info float-end">{{ order.customer.order.product.discount}}%</span></li> {% endcomment %}
+                                                      {% comment %} <li class="list-group-item">Delivery Charge & Tax: <span class="badge bg-info float-end">{{ order.customer.order.product.shipping_charge}}</span></li> {% endcomment %}
+                                                      <li class="list-group-item">Total Number Of Books: <span class="badge bg-info float-end">1</span></li>
+                                                      <li class="list-group-item">Net Amount: <span class="badge bg-info float-end">{{ order.pay_amount}}</span></li>
+                                                      <li class="list-group-item">Order Status: <span class="badge bg-success float-end">Confirmed</span></li>
+                                                    </ul>
+                                                  </div>
+                                                  
+                                                </div>
+                                                <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td><a href="{% url 'track_p_order' order.id%}"><button
                                                     class="btn btn-primary">Track</button></a></td>
-                                        <td>{{ order.customer.address_line1 }}</td>
-                                        <td>{{ order.customer.zipcode }}</td>
+                                        <td>{{ order.address }}</td>
+                                        <td>{{ order.zip_code }}</td>
                                         <td>{{ order.transaction_id}}</td>
 
-                                        <td>
-                                            {{ order.customer.order.product.seller_name_or_shop_name}}
-                                        </td>
-                                        <td>Action</td>
-                                        <td>Barcode</td>
-                                        <td>order.customer.city</td>
-                                        <td>order.customer.address_line1</td>
-                                        <td>Action</td>
+                                        
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -130,5 +204,62 @@
             }
         });
     });
+
+
+    $(document).ready(function () {
+
+        function updateCheckboxState() {
+            // Get all checked checkboxes
+            var checkedCount = $('input[type="checkbox"]:checked').length;
+            
+            // Disable unchecked checkboxes if 4 are checked
+            $('input[type="checkbox"]').each(function () {
+                if (!$(this).is(':checked') && checkedCount >= 50) {
+                    $(this).prop('disabled', true);
+                } else {
+                    $(this).prop('disabled', false);
+                }
+            });
+        }
+  
+        // Call initially to apply rules
+        updateCheckboxState();
+  
+        $('input[type="checkbox"]').change(function () {
+            var categoryId = $(this).data('id');
+            var status = $(this).is(':checked');
+  
+            $.ajax({
+                url: "{% url 'update_check_p_order_status' %}",
+                type: "POST",
+                data: {
+                    'p_order_id': categoryId,
+                    'status': status
+                },
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    alert(response.message);
+                    updateCheckboxState(); // Update the state after change
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                    alert("Something went wrong!");
+                }
+            });
+        });
+    });
+    function printDiv() {
+        var printContents = document.getElementById('divprint').innerHTML;
+  
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        setTimeout(function() {
+          location.reload();
+      }, 3000);
+      }
 </script>
 {% endblock %}

@@ -270,6 +270,7 @@ class P_Order(models.Model):
     pay_status=models.BooleanField(blank=True,null=True)
     transaction_id=models.CharField(blank=True,null=True,max_length=255)
     status=models.BooleanField(blank=True,null=True)
+    check_status=models.BooleanField(default=False,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)  # Set when created
     updated_at = models.DateTimeField(auto_now=True)
     def save(self, *args, **kwargs):
