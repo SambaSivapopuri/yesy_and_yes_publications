@@ -158,7 +158,7 @@ def category_list(request):
     for category in categories:
         category.sub_category_count = Sub_Category.objects.filter(category=category,status=True).count()
 
-    paginator = Paginator(categories, 50)  # Show 50 categories per page
+    paginator = Paginator(categories, 100)  # Show 50 categories per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -262,7 +262,7 @@ def add_sub_category(request):
 @login_required
 def sub_category_list(request):
     subcategories = Sub_Category.objects.filter(status=True).order_by('-id')  
-    paginator = Paginator(subcategories, 50) 
+    paginator = Paginator(subcategories, 100) 
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
@@ -367,7 +367,7 @@ def add_product(request):
 def product_list(request):
     product_list = Product.objects.filter(status=True).order_by('-id')
     # Set up pagination (10 products per page)
-    paginator = Paginator(product_list, 50)  
+    paginator = Paginator(product_list, 100)  
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -486,7 +486,7 @@ def order_list(request):
             pass  # Handle invalid date format gracefully
 
     # Set up pagination (50 products per page)
-    paginator = Paginator(product_list, 50)
+    paginator = Paginator(product_list, 100)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -709,7 +709,7 @@ def p_order(request):
 @login_required
 def p_order_list(request):
     product_list = P_Order.objects.filter().order_by('-id')
-    paginator = Paginator(product_list, 50)
+    paginator = Paginator(product_list, 100)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request,"admin_templates/p_order_list.html",{"page_obj": page_obj})
@@ -735,8 +735,6 @@ def track_p_order(request,id):
         Track.objects.create(track_number=request.POST["track_no"],weight=request.POST["weight"],mobile=request.POST["mobile"],status=True)
         order_detais=P_Order.objects.get(id=id)
         postal_tracking(request.POST["mobile"],order_detais.p_order_number,order.pay_amount,request.POST["track_no"])
-        # order_detais.status=False
-        # order_detais.save()
         messages.success(request, 'successful Sended..')
         return redirect("p_order_list")
     return render(request,"admin_templates/track.html",{"order":order})

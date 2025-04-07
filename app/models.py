@@ -81,7 +81,6 @@ class Product(models.Model):
     name = models.CharField(max_length=255)
     product_type=models.CharField(max_length=255,blank=True,null=True)
     sub_category = models.ForeignKey(Sub_Category, on_delete=models.CASCADE)
-    product_quntity = models.IntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     discount = models.DecimalField(max_digits=5, decimal_places=2)
     shipping_charge = models.DecimalField(max_digits=10, decimal_places=2)
@@ -143,7 +142,7 @@ class Order(models.Model):
         if not self.order_number:
             last_order = Order.objects.filter(product=self.product).order_by('-id').first()
             # last_order_count = int(last_order.order_number.split('-')[-1]) if last_order and last_order.order_number else 0
-            last_order_count=str(uuid.uuid4()).replace("-", "").upper()[:20]  # Generates a 10-character unique code
+            last_order_count=str(uuid.uuid4()).replace("-", "").upper()[:10]  # Generates a 10-character unique code
             self.order_number = f"order-{last_order_count}"
         super().save(*args, **kwargs)
 

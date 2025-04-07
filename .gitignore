@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+
+db.sqlite3
+# VS Code
+.vscode/
+
+# Migrations (optional — usually keep them)
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyo
+*.pyd
+
+# MacOS / Linux / Windows
+.DS_Store
+Thumbs.db

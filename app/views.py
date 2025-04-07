@@ -19,11 +19,11 @@ from .send_sms import *
 # Create your views here.
 def index(request):
     try:
-        selected_books = Product.objects.filter(status=True,product_quntity__gt=0).order_by('-id')[:16]
+        selected_books = Product.objects.filter(status=True).order_by('-id')[:16]
         nv_bar=Nav_bar.objects.filter(status=True,display=True).order_by('-id')
         # If there are fewer than 4 books, fetch books with selected_items=False
         if selected_books.count() < 17:
-            remaining_books = Product.objects.filter(status=True,product_quntity__gt=0).order_by('-id')[:(17 - selected_books.count())]
+            remaining_books = Product.objects.filter(status=True).order_by('-id')[:(17 - selected_books.count())]
             latest_books = selected_books | remaining_books  # Combine both querysets
         else:
             latest_books = selected_books
@@ -32,7 +32,7 @@ def index(request):
     except:
         return render(request,"index.html",{"books":latest_books,"nav_bar":nv_bar,"category":Display_Category.objects.filter(status=True)})
 def category_products(request,id):
-    products = Product.objects.filter(status=True,sub_category__category__id=id,product_quntity__gt=0).order_by('-id')  # Fetch all products, ordered by latest
+    products = Product.objects.filter(status=True,sub_category__category__id=id).order_by('-id')  # Fetch all products, ordered by latest
 
     # Pagination setup (10 products per page)
     paginator = Paginator(products, 30)  
@@ -44,7 +44,7 @@ def category_products(request,id):
 def search_product(request):
     query = request.GET.get('q', '')
     if query:
-        products = Product.objects.filter(name__icontains=query,product_quntity__gt=0)
+        products = Product.objects.filter(name__icontains=query)
         product_list = list(products.values('id', 'name'))
     else:
         product_list = []
@@ -157,7 +157,7 @@ def update_user(request):
         #     return redirect("index")
     return render(request,"register.html",{"user_details":UserDetails.objects.filter(user=request.user).first(),"category":Display_Category.objects.filter(status=True)})
 def product_list_all(request):
-    products = Product.objects.filter(status=True,product_quntity__gt=0).order_by('-id')  # Fetch all products, ordered by latest
+    products = Product.objects.filter(status=True).order_by('-id')  # Fetch all products, ordered by latest
 
     # Pagination setup (10 products per page)
     paginator = Paginator(products, 30)  
