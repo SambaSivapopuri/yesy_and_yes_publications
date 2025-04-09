@@ -255,7 +255,7 @@ def billing(request):
 def user_orders_list(request):
     if request.method == "POST":
         mobile_number = request.POST.get("mobile")
-        details = Payment_details.objects.filter(customer__customer_phone=mobile_number).order_by("-id")
+        details = Payment_details.objects.filter(customer__customer_phone=mobile_number,customer__order__status=True).order_by("-id")
         print(details)
         return render(request, "yourorders.html", {"orders": details,"mobile":mobile_number,"category":Display_Category.objects.filter(status=True)})
     return render(request, "yourorders.html", {"category":Display_Category.objects.filter(status=True)})
