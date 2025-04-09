@@ -52,21 +52,20 @@
                                 <thead style="position: sticky; top: 0; background: white; z-index: 2;">
                                     <tr>
                                         <th style="min-width: 50px;">S.No</th>
-                                        <th style="min-width: 100px;">Number</th>
+                                        {% comment %} <th style="min-width: 100px;">Number</th> {% endcomment %}
                                         <th style="min-width: 120px;">Date</th>
                                         <th style="min-width: 120px;">Product Name</th>
                                         <th style="min-width: 120px;">Quantity</th>
-                                        <th style="min-width: 120px;">Order No</th>
-                                        <th style="min-width: 120px;">Payent Status</th>
-                                        <th style="min-width: 120px;">Pay Amount</th>
+                                        {% comment %} <th style="min-width: 120px;">Order No</th> {% endcomment %}
+                                        {% comment %} <th style="min-width: 120px;">Payent Status</th> {% endcomment %}
+                                        {% comment %} <th style="min-width: 120px;">Pay Amount</th> {% endcomment %}
                                         <th style="min-width: 120px;">Name</th>
                                         <th style="min-width: 120px;">Phone No</th>
                                         <th style="min-width: 120px;">Preview</th>
-                                        <th style="min-width: 120px;">Track Post</th>
+                                        {% comment %} <th style="min-width: 120px;">Track Post</th> {% endcomment %}
                                         <th style="min-width: 120px;">Address</th>
                                         <th style="min-width: 120px;">Zipcode</th>
-                                        <th style="min-width: 100px;">Transaction Id</th>
-
+                                        <th style="min-width: 120px;">Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,22 +73,22 @@
                                     <tr>
                                         <td><input type="checkbox" name="category" id="{{ order.id }}" data-id="{{ order.id }}" {% if order.check_status %}checked{% endif %}>
                                             {{forloop.counter }}</td>
-                                        <td>{{ order.id}}</td>
+                                        {% comment %} <td>{{ order.id}}</td> {% endcomment %}
                                         {% comment %} <td><img
                                                 src="{% if product.image %}{{ product.image.url }} {% endif %}"
                                                 width="50"></td> {% endcomment %}
                                         <td>{{ order.date|date:"d-m-Y" }}</td>
                                         <td>{{ order.product_name }}</td>
                                         <td>1</td>
-                                        <td>{{ order.p_order_number }}</td>
-                                        <td>
+                                        {% comment %} <td>{{ order.p_order_number }}</td> {% endcomment %}
+                                        {% comment %} <td>
                                             {% if not order.status %}
                                             <span class="badge bg-danger">Not Available</span>
                                             {% else %}
                                             <span class="badge bg-success">success</span>
                                             {% endif %}
-                                        </td>
-                                        <td>{{ order.pay_amount}}</td>
+                                        </td> {% endcomment %}
+                                        {% comment %} <td>{{ order.pay_amount}}</td> {% endcomment %}
                                         <td>{{ order.name }}</td>
                                         <td>{{ order.phone }}</td>
                                         <td><button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#previewModal{{ order.id }}">
@@ -120,10 +119,10 @@
                                                         <p><b>To :</b> {{ order.name }}
                                                           <p><b>Address:</b>{{ order.address}},{{ order.zip_code }}</p>
                                                         <p><b>Mobile:</b> {{ order.phone }}</p>
-                                                        <p><b>Order Id:</b> {{ order.p_order_number }}</p>
+                                                        {% comment %} <p><b>Order Id:</b> {{ order.p_order_number }}</p> {% endcomment %}
                                                         <p><b>Ordered Date:</b> {{ order.date|date:"d-m-y" }}
                                                         </p>
-                                                        <p><b>Transaction Id:</b> {{ order.transaction_id }}</p>
+                                                        {% comment %} <p><b>Transaction Id:</b> {{ order.transaction_id }}</p> {% endcomment %}
                                                       </div>
                                                     </div>
                                                     
@@ -148,22 +147,22 @@
                                                             <td>{{ order.product_name }}</td>
                                                             {% comment %} <td><img src="{{ order.customer.order.product.image.url}}" width="100px" height="50px"></td> {% endcomment %}
                                                             {% comment %} <td>{{ order.customer.order.product.discount}}%</td> {% endcomment %}
-                                                            <td>{{ order.pay_amount}}</td>
+                                                            {% comment %} <td>{{ order.pay_amount}}</td> {% endcomment %}
                                                             {% comment %} <td>{{ order.customer.order.product.discount_mount}}</td>
                                                             <td>{{ order.customer.order.product.shipping_charge}}</td> {% endcomment %}
                                                             <td>1</td>
-                                                            <td>{{ order.pay_amount}}</td>
+                                                            {% comment %} <td>{{ order.pay_amount}}</td> {% endcomment %}
                                                           </tr>
                                                         </tbody>
                                                       </table>
                                                     </div>
                                                     <ul class="list-group">
-                                                      <li class="list-group-item">Payment Method: <span class="badge bg-primary float-end">Online</span></li>
-                                                      <li class="list-group-item">Total Price: <span class="badge bg-info float-end">{{ order.pay_amount}}</span></li>
+                                                      {% comment %} <li class="list-group-item">Payment Method: <span class="badge bg-primary float-end">Online</span></li> {% endcomment %}
+                                                      {% comment %} <li class="list-group-item">Total Price: <span class="badge bg-info float-end">{{ order.pay_amount}}</span></li> {% endcomment %}
                                                       {% comment %} <li class="list-group-item">Discount: <span class="badge bg-info float-end">{{ order.customer.order.product.discount}}%</span></li> {% endcomment %}
                                                       {% comment %} <li class="list-group-item">Delivery Charge & Tax: <span class="badge bg-info float-end">{{ order.customer.order.product.shipping_charge}}</span></li> {% endcomment %}
-                                                      <li class="list-group-item">Total Number Of Books: <span class="badge bg-info float-end">1</span></li>
-                                                      <li class="list-group-item">Net Amount: <span class="badge bg-info float-end">{{ order.pay_amount}}</span></li>
+                                                      {% comment %} <li class="list-group-item">Total Number Of Books: <span class="badge bg-info float-end">1</span></li> {% endcomment %}
+                                                      {% comment %} <li class="list-group-item">Net Amount: <span class="badge bg-info float-end">{{ order.pay_amount}}</span></li> {% endcomment %}
                                                       <li class="list-group-item">Order Status: <span class="badge bg-success float-end">Confirmed</span></li>
                                                     </ul>
                                                   </div>
@@ -176,11 +175,15 @@
                                             </div>
                                           </div>
                                         </td>
-                                        <td><a href="{% url 'track_p_order' order.id%}"><button
-                                                    class="btn btn-primary">Track</button></a></td>
+                                        {% comment %} <td><a href="{% url 'track_p_order' order.id%}"><button
+                                                    class="btn btn-primary">Track</button></a></td> {% endcomment %}
                                         <td>{{ order.address }}</td>
                                         <td>{{ order.zip_code }}</td>
-                                        <td>{{ order.transaction_id}}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="{{ order.id }}">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
+                                        </td>
 
                                         
                                     </tr>
@@ -303,11 +306,11 @@
     });
 
     // Ask before leaving if upload not complete
-    window.onbeforeunload = function () {
+    {% comment %} window.onbeforeunload = function () {
         if (!uploadCompleted) {
             return "Are you sure you want to leave this page? Your upload may be interrupted.";
         }
-    };
+    }; {% endcomment %}
 
     // Display page load time
     window.onload = function () {
@@ -315,6 +318,7 @@
         const formattedTime = now.toLocaleTimeString();
         document.getElementById('timer').innerText = 'Page refreshed at: ' + formattedTime;
     };
+    
 </script>
 
 <script>
@@ -374,4 +378,49 @@
       }, 3000);
       }
 </script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).ready(function () {
+    $('.delete-btn').click(function () {
+        const p_order_id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/remove_p_order_status/',
+                    type: 'POST',
+                    data: {
+                        'p_order_id': p_order_id,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Deleted!', response.message, 'success').then(() => {
+                                location.reload();  // Optionally reload or remove the row
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error!', 'Something went wrong.', 'error');
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+
 {% endblock %}

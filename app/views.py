@@ -279,7 +279,7 @@ def payment_success(request,order, mobile, amount):
     # try:
     response = requests.get(url, headers=headers)
     data = response.json()
-    if response and data["cf_order_id"]:
+    if response and data["order_status"] == "PAID":
         
         print("Order Details:", data)
         
@@ -300,8 +300,6 @@ def payment_success(request,order, mobile, amount):
         order_obj.status = True
         order_obj.save()
         product=Product.objects.get(id=order_obj.product.id)
-        product.product_quntity=product.product_quntity-1
-        product.save()
         payment=Payment_details.objects.filter(customer__order__id=order_obj.id).first()
         payment.transaction_id=data["cf_order_id"]
         payment.save()

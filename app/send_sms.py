@@ -42,8 +42,9 @@ def send_sms_customer_order(mobile,order,amount):
         try:
             response = requests.get(url, params=params)
             order=Order.objects.filter(order_number=order).first()
+            order.status=True
+            order.save()
             product=Product.objects.get(id=order.product.id)
-            product.product_quntity=product.product_quntity-1
             product.save()
             print("Status Code:", response.status_code)
             print("Response:", response.text)

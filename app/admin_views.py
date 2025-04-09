@@ -19,7 +19,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 import csv
-from datetime import datetime
+from datetime import datetime,date
+from django.db.models import Count
 def get_subcategories(request):
     category_id = request.GET.get('category_id')
     if category_id:
@@ -142,13 +143,14 @@ def add_category(request):
         status = request.POST.get("check", "False") == "on"# Convert checkbox to boolean
         image = request.FILES.get("img")  # Get image file from request.FILES
 
-        if image:  # Ensure an image is uploaded
+        if name:  # Ensure an image is uploaded
             try:
                 category=Category.objects.create(name=name, status=status, image=image)
                 Display_Category.objects.create(category=category,status=False)
+                print("test")
             except:
                 return render(request, 'admin_templates/add_category.html',{"error":"Category Exits.."})
-        return render(request, 'admin_templates/add_category.html',{"message":f'{category.name}-Category Added success..'})
+        return render(request, 'admin_templates/add_category.html',{"message":f'{name}-Category Added success..'})
     return render(request, 'admin_templates/add_category.html')
 @login_required
 def category_list(request):
@@ -252,7 +254,7 @@ def add_sub_category(request):
         status = request.POST.get("check", "False") == "on"# Convert checkbox to boolean
         image = request.FILES.get("img")  # Get image file from request.FILES
 
-        if image:  # Ensure an image is uploaded
+        if name:  # Ensure an image is uploaded
             try:
                 sub=Sub_Category.objects.create(name=name, status=status, image=image,category_id=category)
             except:
@@ -312,7 +314,6 @@ def add_product(request):
         name = request.POST['name']
         product_type = request.POST['product_type']
         subcategory_id = request.POST['subcategory']
-        product_quantity = request.POST['qty']
         product_price = request.POST.get('price')
         product_discount = request.POST['discount']
         shipping_charge = request.POST['shipping_charge']
@@ -328,16 +329,18 @@ def add_product(request):
         # Validate required fields and check if the subcategory exists
         try:
             subcategory = Sub_Category.objects.get(id=subcategory_id)
+            if Product.objects.filter(name=name,status=True,sub_category=subcategory).exists():
+                messages.error(request,"Alerdy Name Exits In subcategory")
+                return redirect("add_product")
         except Sub_Category.DoesNotExist:
             messages.error(request, "The selected subcategory does not exist.")
-            return redirect('admin')
+            return redirect('add_product')
 
         # Create Product object
         product = Product.objects.create(
             name=name,
             sub_category_id=subcategory.id,
             product_type=product_type,
-            product_quntity=product_quantity,
             price=product_price,
             discount=product_discount,
             shipping_charge=shipping_charge,
@@ -359,7 +362,7 @@ def add_product(request):
             ProductImage.objects.create(product=product, image=related_image)
 
         messages.success(request, "Product created successfully.")
-        return redirect('admin')
+        return redirect('add_product')
 
     categories = Category.objects.filter(status=True).order_by('-id')
     return render(request, 'admin_templates/product.html', {'categories': categories})
@@ -376,73 +379,77 @@ def product_list(request):
 def update_product(request, id):
     product = get_object_or_404(Product, id=id)
     sub_categories = Sub_Category.objects.filter(status=True).order_by('-id')
-    product_images = ProductImage.objects.filter(product=product).order_by('-id')
     categories = Category.objects.filter(status=True).order_by('-id')
-    pdf=ProductRelatedPdf.objects.filter(status=True,product=product).order_by("-id").first()
+    product_images = ProductImage.objects.filter(product=product).order_by('-id')
+    existing_pdf = ProductRelatedPdf.objects.filter(product=product, status=True).order_by("-id").first()
+
     if request.method == "POST":
-        count=Product.objects.filter(name=request.POST["name"],status=True).count()
-        if count == 1:
-            # Update product details
-            product.name = request.POST.get("name", product.name)
-            product.product_quntity = request.POST.get("product_quntity", product.product_quntity)
-            product.price = request.POST.get("price", product.price)
-            product.discount = request.POST.get("discount", product.discount)
-            product.shipping_charge = request.POST.get("shipping_charge", product.shipping_charge)
-            product.seller_name_or_shop_name = request.POST.get("seller_name_or_shop_name", product.seller_name_or_shop_name)
-            product.product_type = request.POST.get("product_type", product.product_type)
-            product.description = request.POST.get("description", product.description)
-            product.status = 'status' in request.POST
-            product.out_of_stock = 'stock' in request.POST
-            product.send_notification = 'send_notification' in request.POST
-            product.product_publish_or_unpublish = 'publish' in request.POST
-            product.image = request.FILES.get('new_image', product.image)
-            # Save the product details
-            product.save()
-            pdf = request.FILES.get('pdf')
-            if pdf:
-                # Delete existing related PDF for the product
-                ProductRelatedPdf.objects.filter(product=product).delete()
-                
-                # Create a new related PDF record
-                ProductRelatedPdf.objects.create(product=product, pdf_file=pdf)
+        name = request.POST.get("name", "").strip()
+        subcategory_id = request.POST.get("subcategory")
+        subcategory = get_object_or_404(Sub_Category, id=subcategory_id)
 
-            # Handle image deletions (if any)
-            delete_images = request.POST.getlist("delete_images")
-            if delete_images:
-                for image_id in delete_images:
-                    image = get_object_or_404(ProductImage, id=image_id, product=product)
-                    if image.image:  # Check if the image exists
-                        default_storage.delete(image.image.path)  # Delete the file from storage
-                    image.delete()  # Remove image record from the database
+        # Check if name is changed and if the new name already exists in the same subcategory
+        if product.name != name:
+            if Product.objects.filter(name=name, status=True, sub_category=subcategory).exclude(id=product.id).exists():
+                messages.error(request, "Name already exists in the selected subcategory.")
+                return redirect("update_product", id=id)
 
-            # Handle new image uploads (if any)
-            new_images = request.FILES.getlist("new_images")
-            for image in new_images:
-                ProductImage.objects.create(product=product, image=image)
+        # Proceed to update the product
+        product.name = name
+        product.sub_category = subcategory
+        product.price = request.POST.get("price", product.price)
+        product.discount = request.POST.get("discount", product.discount)
+        product.shipping_charge = request.POST.get("shipping_charge", product.shipping_charge)
+        product.seller_name_or_shop_name = request.POST.get("seller_name_or_shop_name", product.seller_name_or_shop_name)
+        product.product_type = request.POST.get("product_type", product.product_type)
+        product.description = request.POST.get("description", product.description)
+        product.status = 'status' in request.POST
+        product.out_of_stock = 'stock' in request.POST
+        product.send_notification = 'send_notification' in request.POST
+        product.product_publish_or_unpublish = 'publish' in request.POST
 
-            # Handle main product image deletion
-            if 'delete_image' in request.POST:
-                # Check if the main product image exists and delete it
-                if product.image and product.image.name:
-                    default_storage.delete(product.image.path)  # Delete file from storage
-                    product.image = None  # Remove the image from the database
-                    product.save()
-            if request.FILES.get('new_image', product.image):
-                product.image = request.FILES.get('new_image', product.image)
-                product.save()
-            messages.success(request, 'successful Updated')
-            return redirect("product_list")  # Redirect to the product list after updating
-        else:
-            messages.error(request, 'Product Already Exists')
-            return redirect("update_product", id=id)
-    
+        # Handle main image update
+        if 'delete_image' in request.POST:
+            if product.image:
+                default_storage.delete(product.image.path)
+                product.image = None
+
+        new_main_image = request.FILES.get('new_image')
+        if new_main_image:
+            product.image = new_main_image
+
+        product.save()
+
+        # Handle PDF upload
+        pdf_file = request.FILES.get('pdf')
+        if pdf_file:
+            ProductRelatedPdf.objects.filter(product=product).delete()
+            ProductRelatedPdf.objects.create(product=product, pdf_file=pdf_file)
+
+        # Handle image deletions
+        delete_images = request.POST.getlist("delete_images")
+        for image_id in delete_images:
+            image = get_object_or_404(ProductImage, id=image_id, product=product)
+            if image.image:
+                default_storage.delete(image.image.path)
+            image.delete()
+
+        # Handle new image uploads
+        new_images = request.FILES.getlist("new_images")
+        for image in new_images:
+            ProductImage.objects.create(product=product, image=image)
+
+        messages.success(request, "Product updated successfully.")
+        return redirect("product_list")
+
     return render(request, "admin_templates/product_update.html", {
         'sub_categories': sub_categories,
-        "categories":categories,
+        "categories": categories,
         "product": product,
         "product_images": product_images,
-        "pdf":pdf
+        "pdf": existing_pdf
     })
+
 @login_required
 def track_order(request,id):
     order=Payment_details.objects.filter(customer__order__status=True,customer__order__id=id).first()
@@ -458,8 +465,8 @@ def track_order(request,id):
 @login_required
 def order_list(request):
     # Initial filter for all active orders
-    product_list = Payment_details.objects.filter().order_by('-id')
-
+    product_list = Payment_details.objects.filter(customer__order__status=True).order_by('-id')
+    order_counts = Order.objects.filter(status=True,created_at__date=date.today()).values('product__name').annotate(order_count=Count('id')).order_by('-order_count')
     # Handle POST request for date filtering
     if request.method == "POST":
         from_date = request.POST.get("from_date")
@@ -481,7 +488,7 @@ def order_list(request):
             # Apply filter with from_date and end_date
             if from_date:
                 product_list = product_list.filter(created_at__range=[from_date, end_date])
-
+                order_counts = Order.objects.filter(status=True,created_at__range=[from_date, end_date]).values('product__name').annotate(order_count=Count('id')).order_by('-order_count')
         except ValueError:
             pass  # Handle invalid date format gracefully
 
@@ -490,7 +497,44 @@ def order_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'admin_templates/order_list.html', {"page_obj": page_obj})
+    return render(request, 'admin_templates/order_list.html', {"page_obj": page_obj,"order_counts":order_counts})
+@login_required
+def cancel_orders(request):
+    # Initial filter for all active orders
+    product_list = Payment_details.objects.filter(customer__order__status=False).order_by('-id')
+    order_counts = Order.objects.filter(status=False,created_at__date=date.today()).values('product__name').annotate(order_count=Count('id')).order_by('-order_count')
+    # Handle POST request for date filtering
+    if request.method == "POST":
+        from_date = request.POST.get("from_date")
+        end_date = request.POST.get("end_date")
+
+        try:
+            # Convert from_date to datetime if it exists
+            if from_date:
+                from_date = datetime.strptime(from_date, '%Y-%m-%d')
+            else:
+                from_date = None
+
+            # If end_date is not provided, use the current date
+            if not end_date:
+                end_date = datetime.now().date()
+            else:
+                end_date = datetime.strptime(end_date, '%Y-%m-%d')
+                
+            # Apply filter with from_date and end_date
+            if from_date:
+                product_list = product_list.filter(created_at__range=[from_date, end_date])
+                order_counts = Order.objects.filter(status=True,created_at__range=[from_date, end_date]).values('product__name').annotate(order_count=Count('id')).order_by('-order_count')
+        except ValueError:
+            pass  # Handle invalid date format gracefully
+
+    # Set up pagination (50 products per page)
+    paginator = Paginator(product_list, 100)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'admin_templates/cancel_orders.html', {"page_obj": page_obj,"order_counts":order_counts})
+
 @csrf_exempt
 def update_check_status(request):
     if request.method == 'POST':
@@ -708,7 +752,7 @@ def p_order(request):
     return render(request, 'admin_templates/p_order.html')
 @login_required
 def p_order_list(request):
-    product_list = P_Order.objects.filter().order_by('-id')
+    product_list = P_Order.objects.filter(status=True).order_by('-id')
     paginator = Paginator(product_list, 100)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -724,9 +768,22 @@ def update_check_p_order_status(request):
             nav_item = P_Order.objects.get(id=product_id)
             nav_item.check_status = status
             nav_item.save()
-            return JsonResponse({'success': True, 'message': 'Data updated successfully'})
-        except Nav_bar.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'Nav item not found'})
+            return JsonResponse({'success': True, 'message': 'Deleted successfully'})
+        except P_Order.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'P-Order not found'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+@csrf_exempt
+def remove_p_order_status(request):
+    if request.method == 'POST':
+        product_id = request.POST.get('p_order_id')
+
+        try:
+            nav_item = P_Order.objects.get(id=product_id)
+            nav_item.status = False
+            nav_item.save()
+            return JsonResponse({'success': True, 'message': 'Deleted successfully'})
+        except P_Order.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'P-Order not found'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 @login_required
 def track_p_order(request,id):
@@ -760,10 +817,9 @@ def upload_orders(request):
         for _, row in df.iterrows():
             print(row['date'])
             # Check required fields
-            if pd.isnull(row['date']) or pd.isnull(row['product_name']) or pd.isnull(row['pay_amount']) \
+            if pd.isnull(row['date']) or pd.isnull(row['product_name']) \
                     or pd.isnull(row['name']) or pd.isnull(row['phone']) or pd.isnull(row['address']) \
-                    or pd.isnull(row['zip_code']) or pd.isnull(row['quntity']) \
-                     or pd.isnull(row['transaction_id']) :
+                    or pd.isnull(row['zip_code']) or pd.isnull(row['quntity']) :
                 continue  # Skip row if any required field is missing
 
             # Handle date parsing
@@ -774,20 +830,20 @@ def upload_orders(request):
                 date_parsed = date_val.date()
             else:
                 continue  # Skip invalid date
-            pay_status = True if str(row['pay_status']).strip() == '1' else False
+            # pay_status = True if str(row['pay_status']).strip() == '1' else False
             p_status = True if str(row['status']).strip() == '1' else False
             # Save valid row
             P_Order.objects.create(
                 date=date_parsed,
                 product_name=row['product_name'],
-                pay_amount=str(row['pay_amount']),
+                # pay_amount=str(row['pay_amount']),
                 name=row['name'],
                 phone=row['phone'],
                 address=row['address'],
                 zip_code=str(row['zip_code']),
                 quntity=int(row['quntity']),
-                pay_status=pay_status,
-                transaction_id=row['transaction_id'],
+                # pay_status=pay_status,
+                # transaction_id=row['transaction_id'],
                 status=p_status,
             )
             inserted_rows += 1

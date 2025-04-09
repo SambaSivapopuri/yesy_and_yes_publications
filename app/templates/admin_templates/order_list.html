@@ -38,12 +38,35 @@
           
           <div class="card-body">
             <div class="card-title ">
-              <button class="btn btn-primary" onclick="window.location.href='{% url 'download_orders' 'csv' %}'">Download
-                CSV</button>
-              <button class="btn btn-primary" onclick="window.location.href='{% url 'download_orders' 'excel' %}'">Download
-                Excel</button>
-              <button class="btn btn-primary" onclick="window.location.href='{% url 'download_orders' 'pdf' %}'">Download
-                PDF</button>
+              <div class="row">
+                
+                <div class="col-md-6">
+                <p><button class="btn btn-primary" onclick="window.location.href='{% url 'download_orders' 'csv' %}'">Download
+                  CSV</button></p>
+                <p><button class="btn btn-primary" onclick="window.location.href='{% url 'download_orders' 'excel' %}'">Download
+                  Excel</button></p>
+                <p><button class="btn btn-primary" onclick="window.location.href='{% url 'download_orders' 'pdf' %}'">Download
+                  PDF</button></p>
+                </div>
+                <div class="col-md-6">
+                  <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                      <tr>
+                        <th>Book Name</th>
+                        <th>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for i in order_counts %}
+                      <tr>
+                        <td>{{i.product__name}}</td>
+                        <td>{{i.order_count}}</td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+            </div>
             </div>
             <h5 class="card-title">Order List</h5>
 
@@ -87,10 +110,11 @@
                     <td>1</td>
                     <td>{{ order.customer.order.order_number }}</td>
                     <td>
-                      {% if not order.status %}
-                      <span class="badge bg-danger">Not Available</span>
-                      {% else %}
+                      {% if order.customer.order.status  %}
                       <span class="badge bg-success">success</span>
+                      
+                      {% else %}
+                      <span class="badge bg-danger">Not success</span>
                       {% endif %}
                     </td>
                     <td>{{ order.total_price}}</td>
