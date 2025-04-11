@@ -17,7 +17,7 @@
       </div>
       {% endif %}
       <!-- No Labels Form -->
-      <form class="row g-3" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> {% csrf_token %}
+      <form class="row g-3" method="post" enctype="multipart/form-data" > {% csrf_token %}
 
         <div class="col-md-6">
           <label for="name" class="form-label">Sub-Category Name</label>

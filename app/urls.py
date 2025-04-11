@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import *
-from .test_admin import *
+from .admin_views import *
 urlpatterns = [
     path('',index,name="index"),
     path("contact/",contact,name="contact"),
@@ -22,7 +22,7 @@ urlpatterns = [
     path('search/', search_product, name='search_products'),
     path("user_orders_list/",user_orders_list,name="user_orders_list"),
     # path('create-payment/', create_payment, name='create_payment'),
-    path('payment-success/<int:order>/<str:mobile>/<str:amount>/', payment_success, name='payment_success'),
+    path('payment-success/<str:order>/<str:mobile>/<str:amount>/', payment_success, name='payment_success'),
     path('payment-webhook/', payment_webhook, name='payment_webhook'),
     path('update-order-status/', update_order_status, name='update_order_status'),
 
@@ -41,15 +41,21 @@ urlpatterns = [
     path("order_list/",order_list,name="order_list"),
     path("update_order/<int:id>/",update_order,name="update_order"),
     path('download-orders/<str:format>/', download_orders, name='download_orders'),
+    path("update_check_status/",update_check_status,name="update_check_status"),
+    path("cancel_orders/",cancel_orders,name="cancel_orders"),
+    path("update_check_p_order_status/",update_check_p_order_status,name="update_check_p_order_status"),
+    path("remove_p_order_status/",remove_p_order_status,name="remove_p_order_status"),
     path('p_order/',p_order,name="p_order"),
     path("p_order_list/",p_order_list,name="p_order_list"),
-    path('upload/', FileUploadView.as_view(), name='file_upload'),
+    path('upload-orders/', upload_orders, name='upload_orders'),
     path("track/<int:id>/",track_order,name="track_order"),
+    path("track_p_order/<int:id>/",track_p_order,name="track_p_order"),
 
     path('update_nav_bar/', update_nav_bar, name='update_nav_bar'),
     path("nav_items/",nav_items,name="nav_items"),
     path("add_nav_item/",add_nav_item,name="add_nav_item"),
     path("navbar_headings/",navbar_headings,name="navbar_headings"),
+    path("save_display_nav_items/",save_display_nav_items,name="save_display_nav_items"),
     path('save_display_category/', save_display_category, name='save_display_category'),
     path('remove-category/<int:id>/', remove_category, name='remove_category'),
     path('remove-sub-category/<int:id>/', remove_sub_category, name='remove_sub_category'),

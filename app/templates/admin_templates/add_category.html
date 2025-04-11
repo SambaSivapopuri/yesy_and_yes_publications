@@ -17,7 +17,7 @@
       </div>
       {% endif %}
       <!-- Form with Labels and Validation -->
-      <form class="row g-3" method="post" enctype="multipart/form-data" onsubmit="return validateForm()"> 
+      <form class="row g-3" method="post" enctype="multipart/form-data" > 
         {% csrf_token %}
 
         <div class="col-md-12">
@@ -28,7 +28,7 @@
 
         <div class="col-md-6">
           <label for="imageUpload" class="form-label">Category Image</label>
-          <input type="file" class="form-control" id="imageUpload" name="img" accept=".jpg, .jpeg, .png" required>
+          <input type="file" class="form-control" id="imageUpload" name="img" accept=".jpg, .jpeg, .png" >
           <div class="invalid-feedback">Please upload a valid image (JPG, JPEG, PNG).</div>
         </div>
 

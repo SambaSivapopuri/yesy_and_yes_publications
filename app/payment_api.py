@@ -21,7 +21,7 @@ def payment_oreder(order_id,amount,name,email,mobile):
             "customerName":name,
             "customerEmail":email,
             "customerPhone":mobile,
-            "returnUrl":"https://test.digigenix.in/payment-success/{order_id}/{mobile}/{amount}/",#https://yesonlinebooks.com/payment-success/
+            "returnUrl":f"https://test.digigenix.in/payment-success/{order_id}/{mobile}/{amount}/",#https://yesonlinebooks.com/payment-success/
             "notifyUrl":""
         }
         response=requests.request("POST",url,data=payload)

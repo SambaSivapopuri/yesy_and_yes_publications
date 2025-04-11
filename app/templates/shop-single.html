@@ -1,71 +1,82 @@
-{% extends "nav_bar.html" %}
+{% extends "base.html" %}
 {% load static %}
+
 {% block content %}
-<!--====== SEARCH BOX PART ENDS ======-->
-<!--====== PAGE BANNER PART START ======-->
-<!--====== PAGE BANNER PART ENDS ======-->
-<!--====== SHOP PART START ======-->
-<section  id="shop-single" class="pt-120 pb-120 gray-bg">
+<section id="shop-single" class="pt-120 pb-120 gray-bg">
   <div class="container">
     <div class="shop-details">
       <div class="row">
+        <!-- Left Side Image -->
         <div class="col-lg-4">
           <div class="shop-left pt-30">
             <div class="tab-content" id="pills-tabContent">
-              <div class="tab-pane fade show active" id="pills-image-0" role="tabpanel" aria-labelledby="pills-image-1-tab">
-                <div class="shop-image"> 
-                  <a href="{% if product.image %}{{ product.image.url }}{% endif %}" class="shop-items ">
-                    <img src="{% if product.image %}{{ product.image.url }}{% endif %}" alt="Shop"></a>
-                   </div>
+              <div class="tab-pane fade show active" id="pills-image-0" role="tabpanel">
+                <div class="shop-image">
+                  <a href="{% if product.image %}{{ product.image.url }}{% endif %}" class="shop-items">
+                    <img src="{% if product.image %}{{ product.image.url }}{% endif %}" alt="Shop">
+                  </a>
+                </div>
               </div>
-              {% for img in images %}<div class="tab-pane fade" id="pills-image-{{img.id}}" role="tabpanel" aria-labelledby="pills-image-2-tab">
-                <div class="shop-image"> 
-                  <a href="{{img.image.url}}" class="shop-items"><img src="{{img.image.url}}" alt="Shop"></a> </div>
-              </div>{% endfor %}
-              
-              
+              {% for img in images %}
+              <div class="tab-pane fade" id="pills-image-{{img.id}}" role="tabpanel">
+                <div class="shop-image">
+                  <a href="{{ img.image.url }}" class="shop-items">
+                    <img src="{{ img.image.url }}" alt="Shop">
+                  </a>
+                </div>
+              </div>
+              {% endfor %}
             </div>
-            <!--<ul class="nav nav-justified mt-30" id="pills-tab" role="tablist">
-              <li class="nav-item"> <a class="active" id="pills-image-1-tab" data-toggle="pill" href="#pills-image-1" role="tab" aria-controls="pills-image-1" aria-selected="true"> <span class="shop-thum"> <img src="images/book/23.jpg" alt="Thum"> </span> </a> </li>
-              <li class="nav-item"> <a id="pills-image-2-tab" data-toggle="pill" href="#pills-image-2" role="tab" aria-controls="pills-image-2" aria-selected="false"> <span class="shop-thum"> <img src="images/book/23.jpg" alt="Thum"> </span> </a> </li>
-              <li class="nav-item"> <a id="pills-image-3-tab" data-toggle="pill" href="#pills-image-3" role="tab" aria-controls="pills-image-1" aria-selected="false"> <span class="shop-thum"> <img src="images/book/23.jpg" alt="Thum"> </span> </a> </li>
-              <li class="nav-item"> <a id="pills-image-4-tab" data-toggle="pill" href="#pills-image-4" role="tab" aria-controls="pills-image-4" aria-selected="false"> <span class="shop-thum"> <img src="images/book/23.jpg" alt="Thum"> </span> </a> </li>
-            </ul>-->
           </div>
-          <!-- shop left -->
         </div>
+
+        <!-- Right Side Content -->
         <div class="col-md-7">
-          <div class="shop-right pt-30" style="MARGIN-LEFT: 73PX;"> <br>
-            <br>
-            <h6>{{product.name}}</h6>
+          <div class="shop-right pt-30" style="margin-left: 73px;">
+            <h6>{{ product.name }}</h6>
             <hr>
-            <span style="color: #292b2c;font-weight: 600; font-size:20px">Rs.{{product.get_final_price}}</span>
-            <p>{{product.description}}</p>
-            <input type="hidden" name="productID" id="productID" value="116">
-            <input type="hidden" name="pdiscount" id="pdiscount" value="30">
-            <!--<input type="hidden" name="loginid" id="loginid" value="">-->
-            <!-- <div class="nice-number pt-15">
-              <input type="text" value="1" name="number" id="number" readonly>
-            </div>-->
-            <!---->
-            <input type="hidden" name="shopid" value="116">
-            <div class="add-btn pt-15"> <a href="javascript:void(0);"> <a href="{% url 'checkout' %}">
-              <button type="submit" class="main-btn" name="submit">Buy Now</button>
-              </a> </a> </div>
-            <!---->
+            <span style="color: #292b2c; font-weight: 600; font-size: 20px">Rs.{{ product.get_final_price }}</span>
+            <p>{{ product.description }}</p>
+
+            <div class="add-btn pt-15">
+              <a href="{% url 'checkout' %}">
+                <button type="submit" class="main-btn" name="submit">Buy Now</button>
+              </a>
+            </div>
+
+            <!-- PDF Viewer Button -->
+            {% if pdf.pdf_file %}
+            <div class="pt-15">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pdfModal">
+                Open PDF
+              </button>
+            </div>
+            {% else %}
+            <p class="mt-3 text-danger">No PDF File Available.</p>
+            {% endif %}
           </div>
         </div>
       </div>
-      <!-- row -->
-      <!-- row -->
     </div>
-    <!-- shop-details -->
-    <!-- related item -->
   </div>
-  <!-- container -->
 </section>
 
-<!--====== COURSES PART ENDS ======-->
-<!--====== FOOTER PART START ======-->
+<!-- Modal -->
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-labelledby="pdfModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pdfModalLabel">PDF Viewer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {% if pdf.pdf_file %}
+        <iframe src="{{ pdf.pdf_file.url }}" width="100%" height="500px" frameborder="0"></iframe>
+        {% else %}
+        <p>No PDF file available.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
-

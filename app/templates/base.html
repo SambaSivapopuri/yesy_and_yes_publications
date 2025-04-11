@@ -11,6 +11,7 @@
   <!--====== Title ======-->
   <title>Yes & Yes Publications</title>
   <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- CSS Files -->
   <link rel="stylesheet" href="{% static 'css/slick.css' %}">
@@ -206,11 +207,11 @@
                     </ul>
                   </div>
               
-              <div class="right-icon text-right">
+              {% comment %} <div class="right-icon text-right">
                 <ul>
                   <li><a href="#"><i class="fa fa-shopping-bag"></i><span>0</span></a></li>
                 </ul>
-              </div>
+              </div> {% endcomment %}
               <!-- right icon -->
             </nav>
             <!-- nav -->
@@ -302,6 +303,8 @@
 <script src="{% static 'js/main.js' %}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDC3Ip9iVC0nIxC6V14CKLQ1HZNF_65qEQ"></script>
 <script src="{% static 'js/map-script.js' %}"></script>
+<!-- Bootstrap 5 JS + Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
 <script>
   $(document).ready(function () {
     // Handle Search Input

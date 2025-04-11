@@ -20,7 +20,7 @@ from .send_sms import *
 def index(request):
     try:
         selected_books = Product.objects.filter(status=True).order_by('-id')[:16]
-        nv_bar=Nav_bar.objects.filter(status=True).order_by('-id')
+        nv_bar=Nav_bar.objects.filter(status=True,display=True).order_by('-id')
         # If there are fewer than 4 books, fetch books with selected_items=False
         if selected_books.count() < 17:
             remaining_books = Product.objects.filter(status=True).order_by('-id')[:(17 - selected_books.count())]
@@ -28,9 +28,9 @@ def index(request):
         else:
             latest_books = selected_books
 
-        return render(request,"index.html",{"books":latest_books,"nv_bar":nv_bar,"category":Display_Category.objects.filter(status=True)})
+        return render(request,"index.html",{"books":latest_books,"nav_bar":nv_bar,"category":Display_Category.objects.filter(status=True)})
     except:
-        return render(request,"index.html",{"books":latest_books,"nv_bar":nv_bar,"category":Display_Category.objects.filter(status=True)})
+        return render(request,"index.html",{"books":latest_books,"nav_bar":nv_bar,"category":Display_Category.objects.filter(status=True)})
 def category_products(request,id):
     products = Product.objects.filter(status=True,sub_category__category__id=id).order_by('-id')  # Fetch all products, ordered by latest
 
@@ -170,7 +170,9 @@ def shop(request,id):
     if product:
         request.session['item_id'] = product.id
         images=ProductImage.objects.filter(product=product,status=True)
-        return render(request,"shop-single.html",{"product":product,"images":images,"category":Display_Category.objects.filter(status=True)})
+        return render(request,"shop-single.html",{"product":product,"images":images,
+                                                  "category":Display_Category.objects.filter(status=True),
+                                                  "pdf":ProductRelatedPdf.objects.filter(status=True,product=product).first()})
 
         
     return render(request,"shop-single.html",{"product":product,"category":Display_Category.objects.filter(status=True)})
@@ -233,12 +235,13 @@ def billing(request):
                     
                 )
                 Payment_details.objects.create(status=True,customer=customer,transaction_id="1234",price=product.price,discount=product.discount,shipping_charge=product.shipping_charge)
-                order.status=True
-                order.save()
+                # order.status=True
+                # order.save()
                 json_data=payment_oreder(order.order_number,order.product.total_price(),customer_name,customer_email,customer_phone)
                 print(json_data)
                 if json_data["status"] == "OK":
                     return redirect(json_data["paymentLink"])
+                
                 messages.success(request, "Order placed successfully!")
                 return redirect("index")
         except:
@@ -252,7 +255,7 @@ def billing(request):
 def user_orders_list(request):
     if request.method == "POST":
         mobile_number = request.POST.get("mobile")
-        details = Payment_details.objects.filter(customer__customer_phone=mobile_number).order_by("-id")
+        details = Payment_details.objects.filter(customer__customer_phone=mobile_number,customer__order__status=True).order_by("-id")
         print(details)
         return render(request, "yourorders.html", {"orders": details,"mobile":mobile_number,"category":Display_Category.objects.filter(status=True)})
     return render(request, "yourorders.html", {"category":Display_Category.objects.filter(status=True)})
@@ -264,45 +267,51 @@ def payment_webhook(request):
         return JsonResponse({"status": "success"})
 import requests
 from django.conf import settings
-def payment_success(request, mobile, order, amount):
+@csrf_exempt
+def payment_success(request,order, mobile, amount):
     url = f"https://api.cashfree.com/pg/orders/{order}"
     headers = {
         "x-api-version": "2022-09-01",
-        "x-client-id": settings.CASHFREE_APP_ID,
-        "x-client-secret": settings.CASHFREE_SECRET_KEY
+        "x-client-id": "87478d531a29f3a768d4b5fe887478",
+        "x-client-secret": "d8b57d22a937864724b7feef4c03d2a14671cb5b"
     }
 
-    try:
-        response = requests.get(url, headers=headers)
+    # try:
+    response = requests.get(url, headers=headers)
+    data = response.json()
+    if response and data["order_status"] == "PAID":
+        
+        print("Order Details:", data)
+        
+        # Ensure the order exists
+        order_obj = Order.objects.filter(order_number=order).first()
+        
+        if not order_obj:
+            print("Error: Order not found")
+            return render(request, "error.html", {"error": "Order not found."})
+        send_sms_customer_order(mobile, str(order_obj.order_number), amount)
+        print("-------------------------------------------------------------")
+        # Ensure payment data is available
+        if "cf_order_id" not in data and not data["cf_order_id"] is None:
+            print("Error: Payment ID not found in response")
+            return render(request, "error.html", {"error": "Payment ID not found."})
 
-        if response.status_code == 200:
-            data = response.json()
-            print("Order Details:", data)
+        # Update Payment details
+        order_obj.status = True
+        order_obj.save()
+        product=Product.objects.get(id=order_obj.product.id)
+        payment=Payment_details.objects.filter(customer__order__id=order_obj.id).first()
+        payment.transaction_id=data["cf_order_id"]
+        payment.save()
+        # Send SMS Confirmation
+        
+    else:
+        print(f"Error {response.status_code}: {response.json()}")
+        return render(request, "error.html", {"error": f"Error: {response.status_code}"})
 
-            # Ensure the order exists
-            order_obj = Order.objects.filter(order_number=order).first()
-            if not order_obj:
-                print("Error: Order not found")
-                return render(request, "error.html", {"error": "Order not found."})
-
-            # Ensure payment data is available
-            if "cf_payment_id" not in data and not data["error_details"] is None:
-                print("Error: Payment ID not found in response")
-                return render(request, "error.html", {"error": "Payment ID not found."})
-
-            # Update Payment details
-            order_obj.status = True
-            order_obj.save()
-            Payment_details.objects.filter(order=order_obj).update(transaction_id=data["cf_payment_id"])
-            # Send SMS Confirmation
-            send_sms_customer_order(mobile, order_obj, amount)
-        else:
-            print(f"Error {response.status_code}: {response.json()}")
-            return render(request, "error.html", {"error": f"Error: {response.status_code}"})
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return render(request, "error.html", {"error": str(e)})
+    # except Exception as e:
+    #     print(f"An error occurred: {e}")
+    #     return render(request, "error.html", {"error": str(e)})
 
     
 

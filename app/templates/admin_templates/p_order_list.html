@@ -14,15 +14,27 @@
         {% endfor %}
         {% endif %}
                     <h1 class="card-title">Upload CSV or Excel File</h1>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <input type="file" id="fileInput" class="form-control" />
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label>Upload Date File:</label>
+                                <input type="file" name="file" id="fileInput" class="form-control" accept=".csv, .xlsx, .xls" required />
+                            </div>
+                            <div class="col-md-6 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <button onclick="uploadFile()" class="btn btn-primary">Upload</button>
+                    </form>
+                    <div id="uploadingStatus" style="display:none;">
+                        <div class="d-flex align-items-center mt-3">
+                            <strong id="uploadTimer">Uploading... 0.0s</strong>
+                            <div class="spinner-border text-primary ms-3" role="status" aria-hidden="true"></div>
                         </div>
                     </div>
-            <p id="message"></p>
+            
+                    <p id="message" class="mt-3"></p>
+                    <p id="timer" style="font-weight:bold;"></p>
+            
                 </div>
             </div>
             
@@ -35,72 +47,145 @@
                         <h5 class="card-title">Order List</h5>
 
                         <!-- Table Container (Fixed Header & Scrollable Body) -->
-                        <div style="max-height: 400px; overflow-y: auto; border: 1px solid #ddd;">
+                        <div style="max-height: 800px; overflow-y: auto; border: 1px solid #ddd;">
                             <table class="table datatable" style="width: 100%; border-collapse: collapse;">
                                 <thead style="position: sticky; top: 0; background: white; z-index: 2;">
                                     <tr>
                                         <th style="min-width: 50px;">S.No</th>
-                                        <th style="min-width: 100px;">Number</th>
+                                        {% comment %} <th style="min-width: 100px;">Number</th> {% endcomment %}
                                         <th style="min-width: 120px;">Date</th>
                                         <th style="min-width: 120px;">Product Name</th>
                                         <th style="min-width: 120px;">Quantity</th>
-                                        <th style="min-width: 120px;">Order No</th>
-                                        <th style="min-width: 120px;">Payent Status</th>
-                                        <th style="min-width: 120px;">Pay Amount</th>
+                                        {% comment %} <th style="min-width: 120px;">Order No</th> {% endcomment %}
+                                        {% comment %} <th style="min-width: 120px;">Payent Status</th> {% endcomment %}
+                                        {% comment %} <th style="min-width: 120px;">Pay Amount</th> {% endcomment %}
                                         <th style="min-width: 120px;">Name</th>
                                         <th style="min-width: 120px;">Phone No</th>
                                         <th style="min-width: 120px;">Preview</th>
-                                        <th style="min-width: 120px;">Track Post</th>
+                                        {% comment %} <th style="min-width: 120px;">Track Post</th> {% endcomment %}
                                         <th style="min-width: 120px;">Address</th>
                                         <th style="min-width: 120px;">Zipcode</th>
-                                        <th style="min-width: 100px;">Transaction Id</th>
-                                        <th style="min-width: 100px;">Seller Name</th>
-                                        <th style="min-width: 140px;">Action</th>
-                                        <th style="min-width: 180px;">Barcode</th>
-                                        <th style="min-width: 150px;">City</th>
-                                        <th style="min-width: 100px;">Address</th>
-                                        <th style="min-width: 100px;">Weight</th>
-
+                                        <th style="min-width: 120px;">Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for order in page_obj %}
                                     <tr>
-                                        <td><input type="checkbox" id="select_all" onclick="toggleAll(this)">{{
-                                            forloop.counter }}</td>
-                                        <td>{{ order.customer.order.id}}</td>
+                                        <td><input type="checkbox" name="category" id="{{ order.id }}" data-id="{{ order.id }}" {% if order.check_status %}checked{% endif %}>
+                                            {{forloop.counter }}</td>
+                                        {% comment %} <td>{{ order.id}}</td> {% endcomment %}
                                         {% comment %} <td><img
                                                 src="{% if product.image %}{{ product.image.url }} {% endif %}"
                                                 width="50"></td> {% endcomment %}
-                                        <td>{{ order.customer.order.created_at|date:"d-m-Y" }}</td>
-                                        <td>{{ order.customer.order.product.name }}</td>
+                                        <td>{{ order.date|date:"d-m-Y" }}</td>
+                                        <td>{{ order.product_name }}</td>
                                         <td>1</td>
-                                        <td>{{ order.customer.order.order_number }}</td>
-                                        <td>
+                                        {% comment %} <td>{{ order.p_order_number }}</td> {% endcomment %}
+                                        {% comment %} <td>
                                             {% if not order.status %}
                                             <span class="badge bg-danger">Not Available</span>
                                             {% else %}
                                             <span class="badge bg-success">success</span>
                                             {% endif %}
+                                        </td> {% endcomment %}
+                                        {% comment %} <td>{{ order.pay_amount}}</td> {% endcomment %}
+                                        <td>{{ order.name }}</td>
+                                        <td>{{ order.phone }}</td>
+                                        <td><button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#previewModal{{ order.id }}">
+                                            Preview
+                                          </button>
+                                      
+                                          <!-- Modal -->
+                                          <div class="modal fade" id="previewModal{{ order.id }}" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                              <div class="modal-content">
+                                                <div class="modal-header">
+                                                  <h5 class="modal-title" id="previewModalLabel">Order Preview - {{ order.customer.order.id }}</h5>
+                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body p_data">
+                                                  <input type="button" id="btn" class="btn btn-primary" value="Print" onclick="printDiv();" style="float:right; margin:10px;">
+                                                  <div id="divprint">
+                                                    <div class="row" style="margin:10px;">
+                                                      <b style="font-weight: 700; color:#000; font-size: 18px;"><u>Yes & Yes Books Publications - Order ID - 4001955231</u></b>
+                                                      <div class="col-md-7"><br>
+                                                        <p><b>From :</b>
+                                                          YES PUBLICATIONS<br>
+                                                          # 29-28-39, Surya Plaza, Dasari Vari Street,<br>
+                                                          Suryaraopet, VIJAYAWADA-520 002<br>
+                                                          Cell: 7377 222 999</p>
+                                                      </div>
+                                                      <div class="col-md-5 text-end">
+                                                        <p><b>To :</b> {{ order.name }}
+                                                          <p><b>Address:</b>{{ order.address}},{{ order.zip_code }}</p>
+                                                        <p><b>Mobile:</b> {{ order.phone }}</p>
+                                                        {% comment %} <p><b>Order Id:</b> {{ order.p_order_number }}</p> {% endcomment %}
+                                                        <p><b>Ordered Date:</b> {{ order.date|date:"d-m-y" }}
+                                                        </p>
+                                                        {% comment %} <p><b>Transaction Id:</b> {{ order.transaction_id }}</p> {% endcomment %}
+                                                      </div>
+                                                    </div>
+                                                    
+                                                    <div class="table-responsive" style="margin:10px;">
+                                                      <table class="table table-striped">
+                                                        <thead>
+                                                          <tr>
+                                                            <th>Sr No.</th>
+                                                            <th>Product Name</th>
+                                                            {% comment %} <th>Product Image</th> {% endcomment %}
+                                                            {% comment %} <th>Discount</th> {% endcomment %}
+                                                            <th>Product Price</th>
+                                                            {% comment %} <th>Discount Amount</th>
+                                                            <th>Shipping Charges</th> {% endcomment %}
+                                                            <th>Product Qty</th>
+                                                            <th>Product Total</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                          <tr>
+                                                            <td>1</td>
+                                                            <td>{{ order.product_name }}</td>
+                                                            {% comment %} <td><img src="{{ order.customer.order.product.image.url}}" width="100px" height="50px"></td> {% endcomment %}
+                                                            {% comment %} <td>{{ order.customer.order.product.discount}}%</td> {% endcomment %}
+                                                            {% comment %} <td>{{ order.pay_amount}}</td> {% endcomment %}
+                                                            {% comment %} <td>{{ order.customer.order.product.discount_mount}}</td>
+                                                            <td>{{ order.customer.order.product.shipping_charge}}</td> {% endcomment %}
+                                                            <td>1</td>
+                                                            {% comment %} <td>{{ order.pay_amount}}</td> {% endcomment %}
+                                                          </tr>
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                    <ul class="list-group">
+                                                      {% comment %} <li class="list-group-item">Payment Method: <span class="badge bg-primary float-end">Online</span></li> {% endcomment %}
+                                                      {% comment %} <li class="list-group-item">Total Price: <span class="badge bg-info float-end">{{ order.pay_amount}}</span></li> {% endcomment %}
+                                                      {% comment %} <li class="list-group-item">Discount: <span class="badge bg-info float-end">{{ order.customer.order.product.discount}}%</span></li> {% endcomment %}
+                                                      {% comment %} <li class="list-group-item">Delivery Charge & Tax: <span class="badge bg-info float-end">{{ order.customer.order.product.shipping_charge}}</span></li> {% endcomment %}
+                                                      {% comment %} <li class="list-group-item">Total Number Of Books: <span class="badge bg-info float-end">1</span></li> {% endcomment %}
+                                                      {% comment %} <li class="list-group-item">Net Amount: <span class="badge bg-info float-end">{{ order.pay_amount}}</span></li> {% endcomment %}
+                                                      <li class="list-group-item">Order Status: <span class="badge bg-success float-end">Confirmed</span></li>
+                                                    </ul>
+                                                  </div>
+                                                  
+                                                </div>
+                                                <div class="modal-footer">
+                                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </div>
                                         </td>
-                                        <td>{{ order.total_price}}</td>
-                                        <td>{{ order.customer.customer_name }}</td>
-                                        <td>{{ order.customer.customer_phone }}</td>
-                                        <td>Preview..</td>
-                                        <td><a href="{% url 'track_order' order.id%}"><button
-                                                    class="btn btn-primary">Track</button></a></td>
-                                        <td>{{ order.customer.address_line1 }}</td>
-                                        <td>{{ order.customer.zipcode }}</td>
-                                        <td>{{ order.transaction_id}}</td>
-
+                                        {% comment %} <td><a href="{% url 'track_p_order' order.id%}"><button
+                                                    class="btn btn-primary">Track</button></a></td> {% endcomment %}
+                                        <td>{{ order.address }}</td>
+                                        <td>{{ order.zip_code }}</td>
                                         <td>
-                                            {{ order.customer.order.product.seller_name_or_shop_name}}
+                                            <button class="btn btn-sm btn-danger delete-btn" data-id="{{ order.id }}">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </button>
                                         </td>
-                                        <td>Action</td>
-                                        <td>Barcode</td>
-                                        <td>order.customer.city</td>
-                                        <td>order.customer.address_line1</td>
-                                        <td>Action</td>
+
+                                        
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -108,37 +193,234 @@
                             </table>
                         </div>
                         <!-- End Table Container -->
-
+                        <div class="d-flex justify-content-center mt-3">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page=1">First</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link">First</span>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <span class="page-link">Previous</span>
+                                        </li>
+                                    {% endif %}
+                        
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                                            {% if page_obj.number == num %}
+                                                <li class="page-item active">
+                                                    <span class="page-link">{{ num }}</span>
+                                                </li>
+                                            {% else %}
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                </li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                        
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                        </li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link">Next</span>
+                                        </li>
+                                        <li class="page-item disabled">
+                                            <span class="page-link">Last</span>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 </section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function uploadFile() {
+    let startTime, timerInterval, uploadCompleted = false;
+
+    $('#uploadForm').on('submit', function (e) {
+        e.preventDefault();
+
         const file = $('#fileInput')[0].files[0];
         if (!file) {
-            $('#message').text('Please select a file.');
+            alert("Please select a file.");
             return;
         }
 
-        const formData = new FormData();
+        let formData = new FormData();
         formData.append('file', file);
 
+        // Show animation
+        $('#uploadingStatus').show();
+        $('#message').text('');
+
+        // Start time tracking
+        startTime = new Date();
+
+        // Start timer animation
+        timerInterval = setInterval(function () {
+            let now = new Date();
+            let duration = ((now - startTime) / 1000).toFixed(1);
+            $('#uploadTimer').text('Uploading... ' + duration + 's');
+        }, 100); // updates every 100ms
+
         $.ajax({
-            url: 'http://127.0.0.1:8000/upload/',
+            url: '/upload-orders/',
             type: 'POST',
             data: formData,
-            processData: false,
             contentType: false,
+            processData: false,
             success: function (response) {
-                $('#message').text(response.message);
+                clearInterval(timerInterval);
+                let endTime = new Date();
+                let totalTime = ((endTime - startTime) / 1000).toFixed(2);
+
+                $('#uploadingStatus').hide();
+                $('#message').html(`✅ <strong>Upload successful!</strong> Time taken: ${totalTime} seconds`);
+                uploadCompleted = true;
+                setTimeout(function() {
+                    location.reload();
+                }, 300);
             },
             error: function (xhr) {
-                const errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'An error occurred';
-                $('#message').text(errorMessage);
+                clearInterval(timerInterval);
+                $('#uploadingStatus').hide();
+                $('#message').html('❌ <strong>Error:</strong> ' + (xhr.responseJSON?.error || 'Something went wrong'));
             }
         });
-    }
+    });
+
+    // Ask before leaving if upload not complete
+    {% comment %} window.onbeforeunload = function () {
+        if (!uploadCompleted) {
+            return "Are you sure you want to leave this page? Your upload may be interrupted.";
+        }
+    }; {% endcomment %}
+
+    // Display page load time
+    window.onload = function () {
+        const now = new Date();
+        const formattedTime = now.toLocaleTimeString();
+        document.getElementById('timer').innerText = 'Page refreshed at: ' + formattedTime;
+    };
+    
 </script>
+
+<script>
+   $(document).ready(function () {
+
+        function updateCheckboxState() {
+            // Get all checked checkboxes
+            var checkedCount = $('input[type="checkbox"]:checked').length;
+            
+            // Disable unchecked checkboxes if 4 are checked
+            $('input[type="checkbox"]').each(function () {
+                if (!$(this).is(':checked') && checkedCount >= 50) {
+                    $(this).prop('disabled', true);
+                } else {
+                    $(this).prop('disabled', false);
+                }
+            });
+        }
+  
+        // Call initially to apply rules
+        updateCheckboxState();
+  
+        $('input[type="checkbox"]').change(function () {
+            var categoryId = $(this).data('id');
+            var status = $(this).is(':checked');
+  
+            $.ajax({
+                url: "{% url 'update_check_p_order_status' %}",
+                type: "POST",
+                data: {
+                    'p_order_id': categoryId,
+                    'status': status
+                },
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function (response) {
+                    alert(response.message);
+                    updateCheckboxState(); // Update the state after change
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                    alert("Something went wrong!");
+                }
+            });
+        });
+    });
+    function printDiv() {
+        var printContents = document.getElementById('divprint').innerHTML;
+  
+        var originalContents = document.body.innerHTML;
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+        setTimeout(function() {
+          location.reload();
+      }, 3000);
+      }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+$(document).ready(function () {
+    $('.delete-btn').click(function () {
+        const p_order_id = $(this).data('id');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/remove_p_order_status/',
+                    type: 'POST',
+                    data: {
+                        'p_order_id': p_order_id,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire('Deleted!', response.message, 'success').then(() => {
+                                location.reload();  // Optionally reload or remove the row
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
+                    },
+                    error: function () {
+                        Swal.fire('Error!', 'Something went wrong.', 'error');
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+
 {% endblock %}
