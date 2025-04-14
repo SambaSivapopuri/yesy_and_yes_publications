@@ -223,7 +223,7 @@ class Track(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Set when created
     updated_at = models.DateTimeField(auto_now=True)  # Update when modified
     class Meta:
-        db_table="track "
+        db_table="track"
 class Nav_bar(models.Model):
     product = models.ForeignKey(Product,on_delete=models.CASCADE)
     name=models.CharField(max_length=255,blank=False,null=False)
@@ -247,7 +247,7 @@ class Contact(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Set when created
     updated_at = models.DateTimeField(auto_now=True)  # Update when modified
     class Meta:
-        db_table="contact_form"
+        db_table="contact"
 
 class Display_Category(models.Model):
     category=models.ForeignKey(Category,on_delete=models.CASCADE)
