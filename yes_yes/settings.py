@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-ixd96ldkz&6hrjr2v77k+#=3%@yvas8bnczg$$eusb37^xgaj-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["yesonlinebooks.in","www.yesonlinebooks.in"]
 
 
 # Application definition
